@@ -7,6 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const ZW_ID_REGEX = /^\d{2}-\d{6}[A-Za-z]\d{2}$/;
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -14,6 +17,7 @@ const Register = () => {
   const [hasMiddleName, setHasMiddleName] = useState(false);
   const [middleName, setMiddleName] = useState("");
   const [email, setEmail] = useState("");
+  const [country, setCountry] = useState("zimbabwe");
   const [nationalId, setNationalId] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,6 +33,10 @@ const Register = () => {
     }
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters");
+      return;
+    }
+    if (country === "zimbabwe" && !ZW_ID_REGEX.test(nationalId)) {
+      toast.error("Invalid Zimbabwean National ID. Expected format: 45-202231J45");
       return;
     }
     const fullName = [firstName, hasMiddleName ? middleName : "", lastName].filter(Boolean).join(" ");
@@ -50,11 +58,11 @@ const Register = () => {
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <Label htmlFor="firstName">First Name</Label>
-            <Input id="firstName" placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+            <Input id="firstName" placeholder="Enter your first name" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="lastName">Last Name</Label>
-            <Input id="lastName" placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+            <Input id="lastName" placeholder="Enter your last name" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
           </div>
         </div>
         <div className="space-y-2">
@@ -63,25 +71,51 @@ const Register = () => {
             <Label htmlFor="hasMiddleName" className="cursor-pointer text-muted-foreground">I have a middle name</Label>
           </div>
           {hasMiddleName && (
-            <Input id="middleName" placeholder="Middle name" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
+            <Input id="middleName" placeholder="Enter your middle name" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
           )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email Address</Label>
-          <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <Input id="email" type="email" placeholder="e.g. john.doe@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
         <div className="space-y-2">
+          <Label htmlFor="country">Country</Label>
+          <Select value={country} onValueChange={(v) => { setCountry(v); setNationalId(""); }}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select your country" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="zimbabwe">Zimbabwe</SelectItem>
+              <SelectItem value="south_africa">South Africa</SelectItem>
+              <SelectItem value="mozambique">Mozambique</SelectItem>
+              <SelectItem value="zambia">Zambia</SelectItem>
+              <SelectItem value="botswana">Botswana</SelectItem>
+              <SelectItem value="malawi">Malawi</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1">
           <Label htmlFor="nationalId">National ID Number</Label>
-          <Input id="nationalId" placeholder="e.g. 63-123456-A-78" value={nationalId} onChange={(e) => setNationalId(e.target.value)} required />
+          <Input
+            id="nationalId"
+            placeholder={country === "zimbabwe" ? "e.g. 45-202231J45" : "Enter your national ID number"}
+            value={nationalId}
+            onChange={(e) => setNationalId(e.target.value)}
+            required
+          />
+          {country === "zimbabwe" && (
+            <p className="text-xs text-muted-foreground">Format: XX-XXXXXXAXX (e.g. 45-202231J45)</p>
+          )}
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <Input id="password" type="password" placeholder="Min. 6 characters" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm</Label>
-            <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+            <Input id="confirmPassword" type="password" placeholder="Re-enter password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
           </div>
         </div>
         <Button type="submit" className="w-full" size="lg" disabled={loading}>
