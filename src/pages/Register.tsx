@@ -6,9 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Register = () => {
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [hasMiddleName, setHasMiddleName] = useState(false);
+  const [middleName, setMiddleName] = useState("");
   const [email, setEmail] = useState("");
   const [nationalId, setNationalId] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +31,7 @@ const Register = () => {
       toast.error("Password must be at least 6 characters");
       return;
     }
+    const fullName = [firstName, hasMiddleName ? middleName : "", lastName].filter(Boolean).join(" ");
     setLoading(true);
     setTimeout(() => {
       if (register(fullName, email, nationalId, password)) {
@@ -42,9 +47,24 @@ const Register = () => {
   return (
     <AuthLayout title="Create an account" subtitle="Register to start your application">
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <Label htmlFor="firstName">First Name</Label>
+            <Input id="firstName" placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input id="lastName" placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+          </div>
+        </div>
         <div className="space-y-2">
-          <Label htmlFor="fullName">Full Name</Label>
-          <Input id="fullName" placeholder="John Doe" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+          <div className="flex items-center space-x-2">
+            <Checkbox id="hasMiddleName" checked={hasMiddleName} onCheckedChange={(v) => { setHasMiddleName(!!v); if (!v) setMiddleName(""); }} />
+            <Label htmlFor="hasMiddleName" className="cursor-pointer text-muted-foreground">I have a middle name</Label>
+          </div>
+          {hasMiddleName && (
+            <Input id="middleName" placeholder="Middle name" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email Address</Label>
