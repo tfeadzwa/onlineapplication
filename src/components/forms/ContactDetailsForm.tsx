@@ -40,27 +40,27 @@ const ContactDetailsForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Phone Number *</Label>
-          <Input value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+263 7X XXX XXXX" required />
+          <Input value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="e.g. +263 7X XXX XXXX" required />
         </div>
         <div className="space-y-2">
           <Label>Alternative Phone</Label>
-          <Input value={form.altPhone} onChange={(e) => update("altPhone", e.target.value)} />
+          <Input value={form.altPhone} onChange={(e) => update("altPhone", e.target.value)} placeholder="e.g. +263 7X XXX XXXX" />
         </div>
         <div className="space-y-2 sm:col-span-2">
           <Label>Email Address *</Label>
-          <Input type="email" value={form.email} onChange={(e) => update("email", e.target.value)} required />
+          <Input type="email" value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="e.g. john.doe@example.com" required />
         </div>
         <div className="space-y-2 sm:col-span-2">
           <Label>Residential Address *</Label>
-          <Textarea value={form.address} onChange={(e) => update("address", e.target.value)} required rows={2} />
+          <Textarea value={form.address} onChange={(e) => update("address", e.target.value)} required rows={2} placeholder="e.g. 123 Main Street, Masvingo" />
         </div>
         <div className="space-y-2">
           <Label>City/Town *</Label>
-          <Input value={form.city} onChange={(e) => update("city", e.target.value)} required />
+          <Input value={form.city} onChange={(e) => update("city", e.target.value)} placeholder="e.g. Masvingo" required />
         </div>
         <div className="space-y-2">
           <Label>Province</Label>
-          <Input value={form.province} onChange={(e) => update("province", e.target.value)} />
+          <Input value={form.province} onChange={(e) => update("province", e.target.value)} placeholder="e.g. Masvingo Province" />
         </div>
       </div>
 
@@ -69,15 +69,15 @@ const ContactDetailsForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label>Full Name *</Label>
-            <Input value={form.nextOfKinName} onChange={(e) => update("nextOfKinName", e.target.value)} required />
+            <Input value={form.nextOfKinName} onChange={(e) => update("nextOfKinName", e.target.value)} placeholder="e.g. Jane Doe" required />
           </div>
           <div className="space-y-2">
             <Label>Phone *</Label>
-            <Input value={form.nextOfKinPhone} onChange={(e) => update("nextOfKinPhone", e.target.value)} required />
+            <Input value={form.nextOfKinPhone} onChange={(e) => update("nextOfKinPhone", e.target.value)} placeholder="e.g. +263 7X XXX XXXX" required />
           </div>
           <div className="space-y-2">
             <Label>Relationship *</Label>
-            <Input value={form.nextOfKinRelation} onChange={(e) => update("nextOfKinRelation", e.target.value)} placeholder="e.g. Parent" required />
+            <Input value={form.nextOfKinRelation} onChange={(e) => update("nextOfKinRelation", e.target.value)} placeholder="e.g. Parent, Sibling, Spouse" required />
           </div>
         </div>
       </div>

@@ -87,7 +87,7 @@ const ProgrammeChoiceForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =
     >
       <div className="space-y-2 max-w-xs">
         <Label>Intake Year *</Label>
-        <Input value={form.intakeYear} onChange={(e) => update("intakeYear", e.target.value)} required />
+        <Input value={form.intakeYear} onChange={(e) => update("intakeYear", e.target.value)} placeholder="e.g. 2026" required />
       </div>
       <div className="space-y-4">
         {[1, 2, 3].map(renderChoice)}
