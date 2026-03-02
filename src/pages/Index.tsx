@@ -42,7 +42,7 @@ const Index = () => {
                 Start Application <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-base px-8 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10" asChild>
+            <Button size="lg" variant="outline" className="text-base px-8 border-primary-foreground/60 text-primary-foreground bg-primary-foreground/10 hover:bg-primary-foreground/20" asChild>
               <Link to="/login">Continue Existing Application</Link>
             </Button>
           </div>
