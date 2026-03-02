@@ -1,73 +1,128 @@
-# Welcome to your Lovable project
+# GZU Online Application Portal
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+The Great Zimbabwe University Online Application Portal is a modern web application that streamlines the university admission process. This platform allows prospective students to apply for undergraduate and postgraduate programs online, submit required documents, and track their application status.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- 🎓 **Multi-Step Application Form** - Intuitive form wizard for student applications
+- 📝 **Student Information Management** - Comprehensive data collection including personal details, contact information, and academic history
+- 📚 **Programme Selection** - Easy selection of desired academic programs
+- 🔐 **Secure Authentication** - User registration and login system
+- 📊 **Application Dashboard** - Track application progress and status
+- 📱 **Responsive Design** - Works seamlessly across desktop, tablet, and mobile devices
 
-**Use Lovable**
+## Technologies Used
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+This project is built with modern web technologies:
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Vite** - Lightning-fast build tool and development server
+- **React 18** - UI library for building interactive interfaces
+- **TypeScript** - Type-safe JavaScript for better code quality
+- **React Router** - Client-side routing and navigation
+- **React Hook Form** - Performant form validation and management
+- **Zod** - Schema validation for forms and data
+- **Tailwind CSS** - Utility-first CSS framework
+- **shadcn/ui** - High-quality, accessible React components
+- **Lucide React** - Beautiful icon library
+- **TanStack Query** - Data fetching and state management
 
-**Use your preferred IDE**
+## Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js (v18 or higher) - [Install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- npm or bun package manager
 
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clone the repository
+git clone <repository-url>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to the project directory
+cd online-application
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies (using npm)
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# Or using bun (faster alternative)
+bun install
 ```
 
-**Edit a file directly in GitHub**
+### Development
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+# Start the development server
+npm run dev
 
-**Use GitHub Codespaces**
+# The application will be available at http://localhost:8080
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Building for Production
 
-## What technologies are used for this project?
+```sh
+# Create an optimized production build
+npm run build
 
-This project is built with:
+# Preview the production build locally
+npm run preview
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Testing
 
-## How can I deploy this project?
+```sh
+# Run tests once
+npm test
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+# Run tests in watch mode
+npm run test:watch
+```
 
-## Can I connect a custom domain to my Lovable project?
+## Project Structure
 
-Yes, you can!
+```
+online-application/
+├── src/
+│   ├── components/      # Reusable UI components
+│   │   ├── forms/       # Application form components
+│   │   └── ui/          # shadcn/ui components
+│   ├── contexts/        # React context providers
+│   ├── hooks/           # Custom React hooks
+│   ├── lib/             # Utility functions
+│   ├── pages/           # Page components
+│   └── main.tsx         # Application entry point
+├── public/              # Static assets
+└── package.json         # Project dependencies
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Application Forms
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+The application process includes multiple forms:
+
+1. **Student Information** - Personal details and demographics
+2. **Contact Details** - Address and communication information
+3. **Programme Choice** - Selection of desired academic programs
+4. **Ordinary Level** - O-Level academic qualifications
+5. **Advanced Level** - A-Level academic qualifications
+6. **Post School Qualifications** - Tertiary education details
+7. **Mature Entry** - Alternative entry qualifications
+8. **Employment History** - Work experience information
+
+## Contributing
+
+To contribute to this project:
+
+1. Create a new branch for your feature
+2. Make your changes following the existing code style
+3. Test your changes thoroughly
+4. Submit a pull request with a clear description
+
+## License
+
+This project is maintained by Great Zimbabwe University.
+
+## Support
+
+For technical support or inquiries, please contact the GZU IT Department.
