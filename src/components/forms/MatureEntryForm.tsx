@@ -46,15 +46,15 @@ const MatureEntryForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
           <div className="space-y-2">
             <Label>Years of Work Experience *</Label>
-            <Input type="number" value={form.yearsOfExperience} onChange={(e) => update("yearsOfExperience", e.target.value)} required min={0} />
+            <Input type="number" value={form.yearsOfExperience} onChange={(e) => update("yearsOfExperience", e.target.value)} placeholder="e.g. 5" required min={0} />
           </div>
           <div className="space-y-2">
             <Label>Current Occupation *</Label>
-            <Input value={form.currentOccupation} onChange={(e) => update("currentOccupation", e.target.value)} required />
+            <Input value={form.currentOccupation} onChange={(e) => update("currentOccupation", e.target.value)} placeholder="e.g. Teacher, Nurse, Farmer" required />
           </div>
           <div className="space-y-2 sm:col-span-2">
             <Label>Current Employer</Label>
-            <Input value={form.employer} onChange={(e) => update("employer", e.target.value)} />
+            <Input value={form.employer} onChange={(e) => update("employer", e.target.value)} placeholder="e.g. Ministry of Education" />
           </div>
           <div className="space-y-2 sm:col-span-2">
             <Label>Relevant Training / Certifications</Label>
