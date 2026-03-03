@@ -11,6 +11,8 @@ import AdvancedLevelForm from "@/components/forms/AdvancedLevelForm";
 import PostSchoolForm from "@/components/forms/PostSchoolForm";
 import EmploymentHistoryForm from "@/components/forms/EmploymentHistoryForm";
 import MatureEntryForm from "@/components/forms/MatureEntryForm";
+import PaymentForm from "@/components/forms/PaymentForm";
+import ApplicationSummary from "@/components/forms/ApplicationSummary";
 import { toast } from "sonner";
 
 const steps = [
@@ -22,6 +24,8 @@ const steps = [
   { id: "a-level", label: "Advanced Level" },
   { id: "post-school", label: "Post-School" },
   { id: "employment", label: "Employment History" },
+  { id: "payment", label: "Payment" },
+  { id: "summary", label: "Summary" },
 ];
 
 const ApplicationForm = () => {
@@ -57,12 +61,19 @@ const ApplicationForm = () => {
     navigate("/dashboard");
   };
 
+  const handleGoToStep = (step: number) => {
+    setCurrentStep(step);
+    window.scrollTo(0, 0);
+  };
+
+  const isLastFormStep = currentStep === steps.length - 1;
+
   const formProps = {
-    data: app.data[steps[currentStep].id] || {},
-    onNext: currentStep === steps.length - 1 ? handleSubmit : handleNext,
+    data: currentStep === steps.length - 1 ? app.data : (app.data[steps[currentStep].id] || {}),
+    onNext: isLastFormStep ? handleSubmit : handleNext,
     onBack: handleBack,
     isFirst: currentStep === 0,
-    isLast: currentStep === steps.length - 1,
+    isLast: isLastFormStep,
   };
 
   return (
@@ -125,6 +136,8 @@ const ApplicationForm = () => {
           {currentStep === 5 && <AdvancedLevelForm {...formProps} />}
           {currentStep === 6 && <PostSchoolForm {...formProps} />}
           {currentStep === 7 && <EmploymentHistoryForm {...formProps} />}
+          {currentStep === 8 && <PaymentForm {...formProps} />}
+          {currentStep === 9 && <ApplicationSummary {...formProps} onGoToStep={handleGoToStep} />}
         </div>
       </div>
     </div>
