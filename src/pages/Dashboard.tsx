@@ -3,8 +3,17 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { GraduationCap, Plus, LogOut, FileText, Clock, CheckCircle, XCircle, Eye } from "lucide-react";
+import {
+  GraduationCap, Plus, LogOut, FileText, Clock, CheckCircle, XCircle, Eye,
+  Trash2, Edit, RotateCcw,
+} from "lucide-react";
 import { format } from "date-fns";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 const statusConfig = {
   draft: { label: "Draft", icon: FileText, className: "bg-muted text-muted-foreground" },
@@ -15,7 +24,7 @@ const statusConfig = {
 };
 
 const Dashboard = () => {
-  const { user, applications, createApplication, logout } = useAuth();
+  const { user, applications, createApplication, logout, deleteApplication, cancelApplication, reopenApplication } = useAuth();
   const navigate = useNavigate();
 
   const handleNewApplication = () => {
@@ -28,9 +37,26 @@ const Dashboard = () => {
     navigate("/login");
   };
 
+  const handleDelete = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    deleteApplication(id);
+    toast.success("Application draft deleted.");
+  };
+
+  const handleCancel = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    cancelApplication(id);
+    toast.info("Application withdrawn and moved back to draft.");
+  };
+
+  const handleReopen = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    reopenApplication(id);
+    toast.info("Application reopened as draft for editing.");
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b bg-card">
         <div className="container flex items-center justify-between h-16 px-4 sm:px-6">
           <div className="flex items-center gap-3">
@@ -82,24 +108,112 @@ const Dashboard = () => {
             {applications.map((app) => {
               const config = statusConfig[app.status];
               const StatusIcon = config.icon;
+              const isDraft = app.status === "draft";
+              const isSubmitted = app.status === "submitted";
+
               return (
-                <Card key={app.id} className="animate-fade-in hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/apply/${app.id}`)}>
-                  <CardContent className="flex items-center justify-between p-5">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Card key={app.id} className="animate-fade-in hover:shadow-md transition-shadow">
+                  <CardContent className="flex items-center justify-between p-5 gap-3">
+                    <div
+                      className="flex items-center gap-4 flex-1 cursor-pointer min-w-0"
+                      onClick={() => navigate(`/apply/${app.id}`)}
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                         <GraduationCap className="w-5 h-5 text-primary" />
                       </div>
-                      <div>
-                        <p className="font-medium">Application #{app.id.slice(0, 8).toUpperCase()}</p>
+                      <div className="min-w-0">
+                        <p className="font-medium truncate">Application #{app.id.slice(0, 8).toUpperCase()}</p>
                         <p className="text-sm text-muted-foreground">
                           Created {format(new Date(app.createdAt), "dd MMM yyyy")}
                         </p>
                       </div>
                     </div>
-                    <Badge variant="secondary" className={config.className}>
-                      <StatusIcon className="w-3 h-3 mr-1" />
-                      {config.label}
-                    </Badge>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Badge variant="secondary" className={config.className}>
+                        <StatusIcon className="w-3 h-3 mr-1" />
+                        {config.label}
+                      </Badge>
+
+                      {/* Draft: Edit + Delete */}
+                      {isDraft && (
+                        <>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(`/apply/${app.id}`)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={(e) => e.stopPropagation()}>
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Draft?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently delete this application draft. This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Keep</AlertDialogCancel>
+                                <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={(e) => handleDelete(e, app.id)}>
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </>
+                      )}
+
+                      {/* Submitted: Edit (withdraw) + Cancel */}
+                      {isSubmitted && (
+                        <>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Edit Submitted Application?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will withdraw your submission and move it back to draft so you can make changes. You'll need to resubmit after editing.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Keep Submitted</AlertDialogCancel>
+                                <AlertDialogAction onClick={(e) => { handleReopen(e, app.id); navigate(`/apply/${app.id}`); }}>
+                                  Withdraw & Edit
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={(e) => e.stopPropagation()}>
+                                <XCircle className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Cancel Application?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will withdraw your submitted application and move it back to draft status. You can resubmit it later.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Keep</AlertDialogCancel>
+                                <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={(e) => handleCancel(e, app.id)}>
+                                  Cancel Application
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               );

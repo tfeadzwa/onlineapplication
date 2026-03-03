@@ -26,6 +26,9 @@ interface AuthContextType {
   createApplication: () => Application;
   updateApplication: (id: string, step: number, data: Record<string, any>) => void;
   submitApplication: (id: string) => void;
+  deleteApplication: (id: string) => void;
+  cancelApplication: (id: string) => void;
+  reopenApplication: (id: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -128,8 +131,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("gz_all_applications", JSON.stringify(allUpdated));
   };
 
+  const deleteApplication = (id: string) => {
+    const updated = applications.filter((a) => a.id !== id);
+    setApplications(updated);
+    const allApps = JSON.parse(localStorage.getItem("gz_all_applications") || "[]");
+    localStorage.setItem("gz_all_applications", JSON.stringify(allApps.filter((a: Application) => a.id !== id)));
+  };
+
+  const cancelApplication = (id: string) => {
+    const updated = applications.map((a) =>
+      a.id === id ? { ...a, status: "draft" as const, updatedAt: new Date().toISOString() } : a
+    );
+    setApplications(updated);
+    const allApps = JSON.parse(localStorage.getItem("gz_all_applications") || "[]");
+    const allUpdated = allApps.map((a: Application) =>
+      a.id === id ? updated.find((u) => u.id === id)! : a
+    );
+    localStorage.setItem("gz_all_applications", JSON.stringify(allUpdated));
+  };
+
+  const reopenApplication = (id: string) => {
+    const updated = applications.map((a) =>
+      a.id === id ? { ...a, status: "draft" as const, updatedAt: new Date().toISOString() } : a
+    );
+    setApplications(updated);
+    const allApps = JSON.parse(localStorage.getItem("gz_all_applications") || "[]");
+    const allUpdated = allApps.map((a: Application) =>
+      a.id === id ? updated.find((u) => u.id === id)! : a
+    );
+    localStorage.setItem("gz_all_applications", JSON.stringify(allUpdated));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, applications, login, register, logout, createApplication, updateApplication, submitApplication }}>
+    <AuthContext.Provider value={{ user, applications, login, register, logout, createApplication, updateApplication, submitApplication, deleteApplication, cancelApplication, reopenApplication }}>
       {children}
     </AuthContext.Provider>
   );
