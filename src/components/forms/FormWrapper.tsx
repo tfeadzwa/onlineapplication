@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Send } from "lucide-react";
 
-interface FormWrapperProps {
+export interface FormWrapperProps {
   title: string;
   description: string;
   children: React.ReactNode;
@@ -9,9 +9,10 @@ interface FormWrapperProps {
   onBack: () => void;
   isFirst: boolean;
   isLast: boolean;
+  customSubmit?: React.ReactNode;
 }
 
-const FormWrapper = ({ title, description, children, onSubmit, onBack, isFirst, isLast }: FormWrapperProps) => {
+const FormWrapper = ({ title, description, children, onSubmit, onBack, isFirst, isLast, customSubmit }: FormWrapperProps) => {
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <div className="mb-6">
@@ -25,13 +26,15 @@ const FormWrapper = ({ title, description, children, onSubmit, onBack, isFirst, 
             <ArrowLeft className="w-4 h-4 mr-2" /> Previous
           </Button>
         ) : <div />}
-        <Button type="submit" size="lg">
-          {isLast ? (
-            <><Send className="w-4 h-4 mr-2" /> Submit Application</>
-          ) : (
-            <>Save & Continue <ArrowRight className="w-4 h-4 ml-2" /></>
-          )}
-        </Button>
+        {customSubmit || (
+          <Button type="submit" size="lg">
+            {isLast ? (
+              <><Send className="w-4 h-4 mr-2" /> Submit Application</>
+            ) : (
+              <>Save & Continue <ArrowRight className="w-4 h-4 ml-2" /></>
+            )}
+          </Button>
+        )}
       </div>
     </form>
   );
