@@ -1,28 +1,9 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import SearchableSelect from "@/components/ui/searchable-select";
+import { FACULTIES, PROGRAMMES } from "@/lib/form-options";
 import FormWrapper from "./FormWrapper";
-
-const faculties = [
-  "Faculty of Arts and Humanities",
-  "Faculty of Commerce",
-  "Faculty of Education",
-  "Faculty of Law",
-  "Faculty of Natural Sciences",
-  "Faculty of Social Sciences",
-  "Faculty of Agriculture and Environmental Sciences",
-];
-
-const programmes: Record<string, string[]> = {
-  "Faculty of Arts and Humanities": ["BA English", "BA History", "BA Linguistics", "BA Religious Studies"],
-  "Faculty of Commerce": ["B.Com Accounting", "B.Com Marketing", "B.Com Finance", "B.Com Business Management"],
-  "Faculty of Education": ["B.Ed Primary", "B.Ed Secondary", "B.Ed Early Childhood"],
-  "Faculty of Law": ["LLB Honours"],
-  "Faculty of Natural Sciences": ["BSc Mathematics", "BSc Computer Science", "BSc Biology", "BSc Chemistry", "BSc Physics"],
-  "Faculty of Social Sciences": ["BSc Psychology", "BSc Sociology", "BSc Economics", "BSc Political Science"],
-  "Faculty of Agriculture and Environmental Sciences": ["BSc Agriculture", "BSc Environmental Science", "BSc Geography"],
-};
 
 interface Props {
   data: Record<string, any>;
@@ -49,27 +30,18 @@ const ProgrammeChoiceForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =
     const fKey = `faculty${num}` as keyof typeof form;
     const pKey = `programme${num}` as keyof typeof form;
     const required = num === 1;
+    const programmeOptions = PROGRAMMES[form[fKey]] || [];
     return (
       <div key={num} className="p-4 rounded-lg border bg-card space-y-4">
         <h3 className="font-heading font-semibold text-sm">Choice {num} {required ? "*" : "(Optional)"}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Faculty</Label>
-            <Select value={form[fKey]} onValueChange={(v) => { update(fKey, v); update(pKey, ""); }}>
-              <SelectTrigger><SelectValue placeholder="Select faculty" /></SelectTrigger>
-              <SelectContent>
-                {faculties.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <SearchableSelect options={FACULTIES} value={form[fKey]} onValueChange={(v) => { update(fKey, v); update(pKey, ""); }} placeholder="Select faculty" searchPlaceholder="Search faculty..." />
           </div>
           <div className="space-y-2">
             <Label>Programme</Label>
-            <Select value={form[pKey]} onValueChange={(v) => update(pKey, v)} disabled={!form[fKey]}>
-              <SelectTrigger><SelectValue placeholder="Select programme" /></SelectTrigger>
-              <SelectContent>
-                {(programmes[form[fKey]] || []).map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <SearchableSelect options={programmeOptions} value={form[pKey]} onValueChange={(v) => update(pKey, v)} placeholder="Select programme" searchPlaceholder="Search programme..." />
           </div>
         </div>
       </div>

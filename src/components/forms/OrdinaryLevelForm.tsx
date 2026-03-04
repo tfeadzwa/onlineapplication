@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, Upload } from "lucide-react";
+import SearchableSelect from "@/components/ui/searchable-select";
+import { O_LEVEL_SUBJECTS, GRADES, EXAM_BOARDS } from "@/lib/form-options";
 import FormWrapper from "./FormWrapper";
 
 interface Subject {
@@ -22,11 +24,11 @@ interface Props {
 
 const OrdinaryLevelForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
   const [subjects, setSubjects] = useState<Subject[]>(
-    data.subjects || [{ name: "", grade: "", year: "", board: "ZIMSEC" }]
+    data.subjects || [{ name: "", grade: "", year: "", board: "zimsec" }]
   );
   const [certificateFile, setCertificateFile] = useState<string>(data.certificateFile || "");
 
-  const addSubject = () => setSubjects([...subjects, { name: "", grade: "", year: "", board: "ZIMSEC" }]);
+  const addSubject = () => setSubjects([...subjects, { name: "", grade: "", year: "", board: "zimsec" }]);
   const removeSubject = (i: number) => setSubjects(subjects.filter((_, idx) => idx !== i));
   const updateSubject = (i: number, key: keyof Subject, value: string) => {
     const updated = [...subjects];
@@ -62,11 +64,11 @@ const OrdinaryLevelForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="space-y-1 col-span-2 sm:col-span-1">
                 <Label className="text-xs">Subject</Label>
-                <Input value={s.name} onChange={(e) => updateSubject(i, "name", e.target.value)} placeholder="e.g. Mathematics" required />
+                <SearchableSelect options={O_LEVEL_SUBJECTS} value={s.name} onValueChange={(v) => updateSubject(i, "name", v)} placeholder="Select subject" searchPlaceholder="Search subject..." allowCustom />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Grade</Label>
-                <Input value={s.grade} onChange={(e) => updateSubject(i, "grade", e.target.value)} placeholder="e.g. A" required />
+                <SearchableSelect options={GRADES} value={s.grade} onValueChange={(v) => updateSubject(i, "grade", v)} placeholder="Grade" searchPlaceholder="Search..." />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Year</Label>
@@ -74,7 +76,7 @@ const OrdinaryLevelForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => 
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Board</Label>
-                <Input value={s.board} onChange={(e) => updateSubject(i, "board", e.target.value)} placeholder="ZIMSEC" />
+                <SearchableSelect options={EXAM_BOARDS} value={s.board} onValueChange={(v) => updateSubject(i, "board", v)} placeholder="Board" searchPlaceholder="Search..." />
               </div>
             </div>
           </div>
