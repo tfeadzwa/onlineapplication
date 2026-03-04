@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CountrySelect } from "@/components/ui/country-select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import FormWrapper from "./FormWrapper";
@@ -87,18 +88,7 @@ const StudentInfoForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
         </div>
         <div className="space-y-2">
           <Label>Country *</Label>
-          <Select value={form.country} onValueChange={(v) => { update("country", v); update("nationalId", ""); }}>
-            <SelectTrigger><SelectValue placeholder="Select your country" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="zimbabwe">Zimbabwe</SelectItem>
-              <SelectItem value="south_africa">South Africa</SelectItem>
-              <SelectItem value="mozambique">Mozambique</SelectItem>
-              <SelectItem value="zambia">Zambia</SelectItem>
-              <SelectItem value="botswana">Botswana</SelectItem>
-              <SelectItem value="malawi">Malawi</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectContent>
-          </Select>
+          <CountrySelect value={form.country} onValueChange={(v) => { update("country", v); update("nationalId", ""); }} />
         </div>
         <div className="space-y-1">
           <Label>National ID *</Label>

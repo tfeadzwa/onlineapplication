@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CountrySelect } from "@/components/ui/country-select";
 
 const ZW_ID_REGEX = /^\d{2}-\d{6}[A-Za-z]\d{2}$/;
 
@@ -80,20 +80,7 @@ const Register = () => {
         </div>
         <div className="space-y-2">
           <Label htmlFor="country">Country</Label>
-          <Select value={country} onValueChange={(v) => { setCountry(v); setNationalId(""); }}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select your country" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="zimbabwe">Zimbabwe</SelectItem>
-              <SelectItem value="south_africa">South Africa</SelectItem>
-              <SelectItem value="mozambique">Mozambique</SelectItem>
-              <SelectItem value="zambia">Zambia</SelectItem>
-              <SelectItem value="botswana">Botswana</SelectItem>
-              <SelectItem value="malawi">Malawi</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectContent>
-          </Select>
+          <CountrySelect value={country} onValueChange={(v) => { setCountry(v); setNationalId(""); }} />
         </div>
         <div className="space-y-1">
           <Label htmlFor="nationalId">National ID Number</Label>
