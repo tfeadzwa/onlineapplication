@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import SearchableSelect from "@/components/ui/searchable-select";
 import { CountrySelect } from "@/components/ui/country-select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { GENDERS, MARITAL_STATUSES } from "@/lib/form-options";
 import FormWrapper from "./FormWrapper";
 
 const ZW_ID_REGEX = /^\d{2}-\d{6}[A-Za-z]\d{2}$/;
@@ -78,13 +79,7 @@ const StudentInfoForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
         </div>
         <div className="space-y-2">
           <Label>Gender *</Label>
-          <Select value={form.gender} onValueChange={(v) => update("gender", v)}>
-            <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="male">Male</SelectItem>
-              <SelectItem value="female">Female</SelectItem>
-            </SelectContent>
-          </Select>
+          <SearchableSelect options={GENDERS} value={form.gender} onValueChange={(v) => update("gender", v)} placeholder="Select gender" searchPlaceholder="Search gender..." />
         </div>
         <div className="space-y-2">
           <Label>Country *</Label>
@@ -104,15 +99,7 @@ const StudentInfoForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
         </div>
         <div className="space-y-2">
           <Label>Marital Status</Label>
-          <Select value={form.maritalStatus} onValueChange={(v) => update("maritalStatus", v)}>
-            <SelectTrigger><SelectValue placeholder="Select marital status" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="single">Single</SelectItem>
-              <SelectItem value="married">Married</SelectItem>
-              <SelectItem value="divorced">Divorced</SelectItem>
-              <SelectItem value="widowed">Widowed</SelectItem>
-            </SelectContent>
-          </Select>
+          <SearchableSelect options={MARITAL_STATUSES} value={form.maritalStatus} onValueChange={(v) => update("maritalStatus", v)} placeholder="Select marital status" searchPlaceholder="Search..." />
         </div>
       </div>
     </FormWrapper>

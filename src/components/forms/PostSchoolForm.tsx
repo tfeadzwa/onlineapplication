@@ -4,6 +4,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Upload } from "lucide-react";
+import SearchableSelect from "@/components/ui/searchable-select";
+import { INSTITUTIONS, QUALIFICATIONS } from "@/lib/form-options";
 import FormWrapper from "./FormWrapper";
 
 interface Qualification {
@@ -58,11 +60,11 @@ const PostSchoolForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label className="text-xs">Institution</Label>
-                <Input value={q.institution} onChange={(e) => update(i, "institution", e.target.value)} placeholder="e.g. Harare Polytechnic" />
+                <SearchableSelect options={INSTITUTIONS} value={q.institution} onValueChange={(v) => update(i, "institution", v)} placeholder="Select institution" searchPlaceholder="Search institution..." allowCustom />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Qualification</Label>
-                <Input value={q.qualification} onChange={(e) => update(i, "qualification", e.target.value)} placeholder="e.g. National Diploma" />
+                <SearchableSelect options={QUALIFICATIONS} value={q.qualification} onValueChange={(v) => update(i, "qualification", v)} placeholder="Select qualification" searchPlaceholder="Search qualification..." allowCustom />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Field of Study</Label>

@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import SearchableSelect from "@/components/ui/searchable-select";
+import { CountrySelect } from "@/components/ui/country-select";
+import { ZW_PROVINCES, ZW_CITIES, RELATIONSHIPS } from "@/lib/form-options";
 import FormWrapper from "./FormWrapper";
 
 interface Props {
@@ -20,7 +23,7 @@ const ContactDetailsForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =>
     address: data.address || "",
     city: data.city || "",
     province: data.province || "",
-    country: data.country || "Zimbabwe",
+    country: data.country || "zimbabwe",
     nextOfKinName: data.nextOfKinName || "",
     nextOfKinPhone: data.nextOfKinPhone || "",
     nextOfKinRelation: data.nextOfKinRelation || "",
@@ -55,12 +58,24 @@ const ContactDetailsForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =>
           <Textarea value={form.address} onChange={(e) => update("address", e.target.value)} required rows={2} placeholder="e.g. 123 Main Street, Masvingo" />
         </div>
         <div className="space-y-2">
-          <Label>City/Town *</Label>
-          <Input value={form.city} onChange={(e) => update("city", e.target.value)} placeholder="e.g. Masvingo" required />
+          <Label>Country *</Label>
+          <CountrySelect value={form.country} onValueChange={(v) => { update("country", v); update("province", ""); update("city", ""); }} />
         </div>
         <div className="space-y-2">
           <Label>Province</Label>
-          <Input value={form.province} onChange={(e) => update("province", e.target.value)} placeholder="e.g. Masvingo Province" />
+          {form.country === "zimbabwe" ? (
+            <SearchableSelect options={ZW_PROVINCES} value={form.province} onValueChange={(v) => update("province", v)} placeholder="Select province" searchPlaceholder="Search province..." />
+          ) : (
+            <Input value={form.province} onChange={(e) => update("province", e.target.value)} placeholder="Enter province/state" />
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label>City/Town *</Label>
+          {form.country === "zimbabwe" ? (
+            <SearchableSelect options={ZW_CITIES} value={form.city} onValueChange={(v) => update("city", v)} placeholder="Select city" searchPlaceholder="Search city..." allowCustom />
+          ) : (
+            <Input value={form.city} onChange={(e) => update("city", e.target.value)} placeholder="Enter city/town" required />
+          )}
         </div>
       </div>
 
@@ -77,7 +92,7 @@ const ContactDetailsForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =>
           </div>
           <div className="space-y-2">
             <Label>Relationship *</Label>
-            <Input value={form.nextOfKinRelation} onChange={(e) => update("nextOfKinRelation", e.target.value)} placeholder="e.g. Parent, Sibling, Spouse" required />
+            <SearchableSelect options={RELATIONSHIPS} value={form.nextOfKinRelation} onValueChange={(v) => update("nextOfKinRelation", v)} placeholder="Select relationship" searchPlaceholder="Search..." allowCustom />
           </div>
         </div>
       </div>
