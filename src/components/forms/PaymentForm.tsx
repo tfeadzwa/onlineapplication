@@ -256,7 +256,10 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
           </div>
         </Card>
 
-        <div className="flex items-center gap-3 mt-8">
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
+          <Button variant="outline" onClick={handleDownloadReceipt}>
+            <Download className="w-4 h-4 mr-2" /> Download Receipt
+          </Button>
           <Button variant="outline" onClick={onBack}>
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
           </Button>
