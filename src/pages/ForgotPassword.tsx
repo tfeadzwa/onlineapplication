@@ -47,6 +47,11 @@ const ForgotPassword = () => {
     e.preventDefault();
     setError("");
 
+    if (!nationalId.trim()) {
+      setError("Please enter your National ID number.");
+      return;
+    }
+
     if (country === "zimbabwe" && !ZW_ID_REGEX.test(nationalId)) {
       setError("Invalid Zimbabwean National ID. Expected format: 45-202231J45");
       return;
