@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Smartphone, CheckCircle2, ArrowRight, Loader2, Phone, Receipt, Calendar, Hash, CreditCard, Clock, Download, RefreshCw, ChevronDown } from "lucide-react";
 import FormWrapper from "./FormWrapper";
+import ecocashLogo from "@/assets/ecocash-logo.png";
 
 interface PaymentRecord {
   referenceNumber: string;
@@ -277,8 +278,8 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
               <div className="px-4 pb-4 space-y-4 border-t border-border/50 pt-4 animate-fade-in">
                 <div className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-primary/20">
                   <div className="flex items-center gap-2">
-                    <Smartphone className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium">EcoCash Mobile Money</span>
+                    <img src={ecocashLogo} alt="EcoCash" className="h-5 w-auto" />
+                    <span className="text-sm font-medium">Mobile Money</span>
                   </div>
                   <span className="text-sm font-heading font-bold text-primary">USD $25.00</span>
                 </div>
@@ -457,9 +458,9 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
 
       {/* EcoCash badge */}
       <div className="flex items-center gap-4 p-4 rounded-lg border-2 border-primary bg-primary/5 shadow-sm">
-        <Smartphone className="w-5 h-5 text-primary" />
+        <img src={ecocashLogo} alt="EcoCash" className="h-6 w-auto" />
         <div className="flex-1">
-          <p className="font-medium text-sm">EcoCash Mobile Money</p>
+          <p className="font-medium text-sm">Mobile Money</p>
           <p className="text-xs text-muted-foreground">A payment prompt will be sent to your phone</p>
         </div>
         <CheckCircle2 className="w-5 h-5 text-primary" />
