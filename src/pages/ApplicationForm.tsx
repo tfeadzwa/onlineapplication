@@ -163,7 +163,7 @@ const ApplicationForm = () => {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none]">
           {/* Mobile Top Stepper */}
           <div className="lg:hidden overflow-x-auto border-b bg-card/50">
             <div className="flex items-center p-3 gap-1 min-w-max">
