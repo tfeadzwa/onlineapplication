@@ -138,7 +138,7 @@ const ForgotPassword = () => {
               placeholder={country === "zimbabwe" ? "e.g. 45-202231J45" : "Enter your national ID number"}
               value={nationalId}
               onChange={(e) => { setNationalId(e.target.value); setError(""); }}
-              required
+            />
             />
             {country === "zimbabwe" && (
               <p className="text-xs text-muted-foreground">
