@@ -212,22 +212,39 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
     });
 
     return (
-      <div className="flex flex-col items-center py-10 animate-fade-in">
-        {/* Success icon */}
-        <div className="relative mb-6">
-          <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center animate-[scale-in_0.5s_ease-out]">
-            <div className="w-14 h-14 rounded-full bg-success flex items-center justify-center shadow-lg shadow-success/30">
-              <CheckCircle2 className="w-7 h-7 text-success-foreground animate-[scale-in_0.3s_ease-out_0.3s_both]" />
+      <FormWrapper
+        title="Application Fee Payment"
+        description="Your payment has been received successfully."
+        onSubmit={(e) => { e.preventDefault(); handleContinue(); }}
+        onBack={onBack}
+        isFirst={isFirst}
+        isLast={isLast}
+        customSubmit={
+          <div className="flex flex-wrap items-center gap-3">
+            <Button type="button" variant="outline" onClick={handleDownloadReceipt}>
+              <Download className="w-4 h-4 mr-2" /> Download Receipt
+            </Button>
+            <Button type="submit" size="lg">
+              Continue to Summary <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        }
+      >
+        {/* Success banner */}
+        <div className="flex flex-col items-center py-6 animate-fade-in">
+          <div className="relative mb-4">
+            <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
+              <div className="w-11 h-11 rounded-full bg-success flex items-center justify-center shadow-lg shadow-success/30">
+                <CheckCircle2 className="w-6 h-6 text-success-foreground" />
+              </div>
             </div>
           </div>
+          <h3 className="text-lg font-heading font-bold text-foreground mb-1">Payment Successful!</h3>
+          <p className="text-sm text-muted-foreground">Your application fee has been received</p>
         </div>
 
-        <h2 className="text-2xl font-heading font-bold text-foreground mb-1">Payment Successful!</h2>
-        <p className="text-sm text-muted-foreground mb-6">Your application fee has been received</p>
-
         {/* Receipt Card */}
-        <Card className="w-full max-w-md border-2 border-success/20 shadow-lg shadow-success/5 overflow-hidden">
-          {/* Receipt header */}
+        <Card className="border-2 border-success/20 shadow-lg shadow-success/5 overflow-hidden">
           <div className="bg-success/5 px-6 py-4 flex items-center justify-between border-b border-success/10">
             <div className="flex items-center gap-2">
               <Receipt className="w-5 h-5 text-success" />
@@ -240,7 +257,6 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
           </div>
 
           <CardContent className="p-6 space-y-4">
-            {/* Amount */}
             <div className="text-center py-3 rounded-lg bg-muted/50">
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Amount Paid</p>
               <p className="text-3xl font-heading font-bold text-foreground">USD $25.00</p>
@@ -248,78 +264,35 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
 
             <Separator />
 
-            {/* Details grid */}
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Hash className="w-4 h-4 text-primary" />
+              {[
+                { icon: Hash, label: "Transaction Reference", value: txRef, mono: true },
+                { icon: Phone, label: "EcoCash Number", value: phoneNumber },
+                { icon: CreditCard, label: "Payment Method", value: "EcoCash Mobile Money" },
+                { icon: Calendar, label: "Date", value: formattedDate },
+                { icon: Clock, label: "Time", value: formattedTime },
+                { icon: User, label: "Description", value: "Application Processing Fee" },
+              ].map(({ icon: Icon, label, value, mono }) => (
+                <div key={label} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-muted-foreground">{label}</p>
+                    <p className={`text-sm font-semibold text-foreground truncate ${mono ? "font-mono" : ""}`}>{value}</p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground">Transaction Reference</p>
-                  <p className="text-sm font-mono font-semibold text-foreground truncate">{txRef}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Phone className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground">EcoCash Number</p>
-                  <p className="text-sm font-semibold text-foreground">{phoneNumber}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <CreditCard className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground">Payment Method</p>
-                  <p className="text-sm font-semibold text-foreground">EcoCash Mobile Money</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Calendar className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground">Date</p>
-                  <p className="text-sm font-semibold text-foreground">{formattedDate}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Clock className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground">Time</p>
-                  <p className="text-sm font-semibold text-foreground">{formattedTime}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <User className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground">Description</p>
-                  <p className="text-sm font-semibold text-foreground">Application Processing Fee</p>
-                </div>
-              </div>
+              ))}
             </div>
           </CardContent>
 
-          {/* Receipt footer */}
           <div className="bg-muted/30 px-6 py-3 border-t text-center">
             <p className="text-xs text-muted-foreground">Keep this receipt for your records</p>
           </div>
         </Card>
 
-        {/* Retry payment notice */}
-        <Card className="w-full max-w-md border border-dashed border-muted-foreground/30 bg-muted/30">
+        {/* Retry payment */}
+        <Card className="border border-dashed border-muted-foreground/30 bg-muted/30">
           <CardContent className="p-4 flex items-start gap-3">
             <RefreshCw className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
             <div className="flex-1">
@@ -327,33 +300,13 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
               <p className="text-xs text-muted-foreground mb-3">
                 If your EcoCash was debited but the payment wasn't received by the university, you can retry with a new transaction.
               </p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setStage("input");
-                }}
-              >
-                <RefreshCw className="w-3.5 h-3.5 mr-2" />
-                Pay Again
+              <Button type="button" variant="outline" size="sm" onClick={() => setStage("input")}>
+                <RefreshCw className="w-3.5 h-3.5 mr-2" /> Pay Again
               </Button>
             </div>
           </CardContent>
         </Card>
-
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-          <Button variant="outline" onClick={handleDownloadReceipt}>
-            <Download className="w-4 h-4 mr-2" /> Download Receipt
-          </Button>
-          <Button variant="outline" onClick={onBack}>
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back
-          </Button>
-          <Button size="lg" onClick={handleContinue}>
-            Continue to Summary
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-        </div>
-      </div>
+      </FormWrapper>
     );
   }
 
