@@ -4,18 +4,57 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import {
   GraduationCap, ArrowLeft, Download, CheckCircle, BookOpen,
   DollarSign, Home, HeartPulse, Calendar, ClipboardList, PartyPopper,
-  ChevronRight, Building2, MapPin, Clock,
+  ChevronRight, Building2, MapPin, Clock, AlertTriangle, ScrollText, Eye,
 } from "lucide-react";
 import { format } from "date-fns";
+import { useState, useEffect, useRef, useCallback } from "react";
 import jsPDF from "jspdf";
 
 const AcceptedOffer = () => {
   const { id } = useParams();
   const { user, applications } = useAuth();
   const navigate = useNavigate();
+
+  const [viewedSteps, setViewedSteps] = useState<Set<number>>(new Set());
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  const handleStepIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const idx = Number(entry.target.getAttribute("data-step-index"));
+        if (!isNaN(idx)) {
+          setViewedSteps((prev) => new Set([...prev, idx]));
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleStepIntersection, {
+      threshold: 0.5,
+      rootMargin: "0px",
+    });
+    stepRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+    return () => observer.disconnect();
+  }, [handleStepIntersection]);
+
+  useEffect(() => {
+    if (!bottomRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setHasScrolledToBottom(true); },
+      { threshold: 0.5 }
+    );
+    observer.observe(bottomRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const app = applications.find((a) => a.id === id);
 
@@ -213,8 +252,23 @@ const AcceptedOffer = () => {
     doc.save(`GZU_Acceptance_Letter_${regNumber.replace(/\//g, "_")}.pdf`);
   };
 
+  const allStepsViewed = viewedSteps.size === nextSteps.length;
+  const readProgress = Math.round((viewedSteps.size / nextSteps.length) * 100);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-primary/[0.03] blur-3xl" />
+        <div className="absolute top-1/3 -left-32 w-[400px] h-[400px] rounded-full bg-accent/[0.05] blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-[350px] h-[350px] rounded-full bg-primary/[0.02] blur-3xl" />
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.015]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)`,
+          backgroundSize: '40px 40px',
+        }} />
+      </div>
+
       {/* Header */}
       <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container flex items-center justify-between h-14 px-4 sm:px-6">
@@ -230,12 +284,38 @@ const AcceptedOffer = () => {
         </div>
       </header>
 
-      <main className="container px-4 sm:px-6 py-8 max-w-6xl">
-        {/* Congratulations Banner */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 to-primary mb-8 p-8 sm:p-10 text-primary-foreground animate-fade-in">
-          <div className="absolute top-4 right-4 opacity-10">
-            <PartyPopper className="w-32 h-32" />
+      {/* Reading progress sticky bar */}
+      {!allStepsViewed && (
+        <div className="sticky top-14 z-40 bg-accent/10 border-b border-accent/20 backdrop-blur-sm">
+          <div className="container px-4 sm:px-6 py-2.5 max-w-6xl">
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center shrink-0">
+                <ScrollText className="w-3.5 h-3.5 text-accent-foreground" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-xs font-semibold text-accent-foreground">
+                    Please read all {nextSteps.length} steps below
+                  </p>
+                  <span className="text-[10px] font-mono text-muted-foreground">{viewedSteps.size}/{nextSteps.length} read</span>
+                </div>
+                <Progress value={readProgress} className="h-1.5 bg-accent/20 [&>div]:bg-accent" />
+              </div>
+            </div>
           </div>
+        </div>
+      )}
+
+      <main className="container px-4 sm:px-6 py-8 max-w-6xl relative z-10">
+        {/* Congratulations Banner */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/95 to-primary/80 mb-8 p-8 sm:p-10 text-primary-foreground animate-fade-in shadow-xl shadow-primary/10">
+          {/* Decorative shapes in banner */}
+          <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
+            <PartyPopper className="w-full h-full" />
+          </div>
+          <div className="absolute -bottom-8 -left-8 w-40 h-40 rounded-full bg-accent/20 blur-2xl" />
+          <div className="absolute top-1/2 right-1/3 w-24 h-24 rounded-full bg-primary-foreground/5 blur-xl" />
+          
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-3">
               <CheckCircle className="w-5 h-5" />
@@ -253,7 +333,7 @@ const AcceptedOffer = () => {
               <Button
                 onClick={generateAcceptanceLetter}
                 variant="secondary"
-                className="bg-primary-foreground/15 text-primary-foreground border-primary-foreground/20 hover:bg-primary-foreground/25"
+                className="bg-primary-foreground/15 text-primary-foreground border-primary-foreground/20 hover:bg-primary-foreground/25 shadow-lg shadow-primary/20"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Download Acceptance Letter
@@ -262,9 +342,40 @@ const AcceptedOffer = () => {
           </div>
         </div>
 
+        {/* Reading reminder alert */}
+        {!allStepsViewed && (
+          <div className="mb-6 animate-fade-in rounded-xl border border-accent/30 bg-accent/5 p-4 flex items-start gap-3">
+            <div className="w-9 h-9 rounded-lg bg-accent/15 flex items-center justify-center shrink-0 mt-0.5">
+              <Eye className="w-4 h-4 text-accent-foreground" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-accent-foreground mb-0.5">Read all information carefully</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Scroll through each of the next steps below to ensure you don't miss any important deadlines or requirements. 
+                Your reading progress is tracked above.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* All read confirmation */}
+        {allStepsViewed && (
+          <div className="mb-6 animate-fade-in rounded-xl border border-primary/30 bg-primary/5 p-4 flex items-start gap-3">
+            <div className="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center shrink-0 mt-0.5">
+              <CheckCircle className="w-4 h-4 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-primary mb-0.5">You've reviewed all the steps!</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Great job! Make sure to follow each step before your registration date. Download your acceptance letter for your records.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Offered Programme */}
         <div className="grid gap-6 mb-8 animate-fade-in">
-          <Card className="border-2 border-primary/20 shadow-md">
+          <Card className="border-2 border-primary/20 shadow-md bg-card/80 backdrop-blur-sm">
             <CardContent className="p-0">
               <div className="bg-primary/5 px-6 py-4 border-b border-primary/10">
                 <div className="flex items-center gap-3">
@@ -310,7 +421,7 @@ const AcceptedOffer = () => {
 
           {/* Applied Programmes */}
           {programmeChoices.length > 0 && (
-            <Card>
+            <Card className="bg-card/80 backdrop-blur-sm">
               <CardContent className="p-0">
                 <div className="px-6 py-4 border-b">
                   <h3 className="font-heading font-semibold text-sm">Your Programme Choices</h3>
@@ -350,44 +461,69 @@ const AcceptedOffer = () => {
           <div className="flex items-center gap-2 mb-5">
             <h2 className="font-heading font-bold text-lg">Next Steps</h2>
             <Badge variant="outline" className="text-[10px]">{nextSteps.length} steps</Badge>
+            {!allStepsViewed && (
+              <Badge variant="outline" className="text-[10px] bg-accent/10 text-accent-foreground border-accent/20 ml-auto">
+                <Eye className="w-3 h-3 mr-1" />
+                {viewedSteps.size}/{nextSteps.length} read
+              </Badge>
+            )}
           </div>
           <div className="space-y-3">
-            {nextSteps.map((step, idx) => (
-              <Card key={idx} className="group hover:shadow-md transition-all duration-200">
-                <CardContent className="p-0">
-                  <div className="p-5">
-                    <div className="flex items-start gap-4">
-                      <div className={`w-10 h-10 rounded-xl ${step.bgColor} flex items-center justify-center shrink-0 mt-0.5`}>
-                        <step.icon className={`w-5 h-5 ${step.color}`} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-heading font-semibold text-sm">{step.title}</h3>
-                          <Badge variant="outline" className="text-[10px] shrink-0">
-                            <Clock className="w-3 h-3 mr-1" />
-                            {step.deadline}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{step.description}</p>
-                        <div className="bg-muted/40 rounded-lg p-3 space-y-1.5">
-                          {step.details.map((detail, dIdx) => (
-                            <div key={dIdx} className="flex items-start gap-2 text-xs text-muted-foreground">
-                              <ChevronRight className="w-3 h-3 mt-0.5 shrink-0 text-primary/60" />
-                              <span>{detail}</span>
+            {nextSteps.map((step, idx) => {
+              const isViewed = viewedSteps.has(idx);
+              return (
+                <div
+                  key={idx}
+                  ref={(el) => (stepRefs.current[idx] = el)}
+                  data-step-index={idx}
+                >
+                  <Card className={`group hover:shadow-md transition-all duration-300 bg-card/80 backdrop-blur-sm ${
+                    isViewed ? "border-primary/15" : "border-border"
+                  }`}>
+                    <CardContent className="p-0">
+                      <div className="p-5">
+                        <div className="flex items-start gap-4">
+                          <div className="relative">
+                            <div className={`w-10 h-10 rounded-xl ${step.bgColor} flex items-center justify-center shrink-0 mt-0.5 transition-all duration-300`}>
+                              <step.icon className={`w-5 h-5 ${step.color}`} />
                             </div>
-                          ))}
+                            {isViewed && (
+                              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center animate-scale-in">
+                                <CheckCircle className="w-3 h-3 text-primary-foreground" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-xs font-bold text-muted-foreground/60 font-mono">0{idx + 1}</span>
+                              <h3 className="font-heading font-semibold text-sm">{step.title}</h3>
+                              <Badge variant="outline" className="text-[10px] shrink-0">
+                                <Clock className="w-3 h-3 mr-1" />
+                                {step.deadline}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{step.description}</p>
+                            <div className="bg-muted/40 rounded-lg p-3 space-y-1.5">
+                              {step.details.map((detail, dIdx) => (
+                                <div key={dIdx} className="flex items-start gap-2 text-xs text-muted-foreground">
+                                  <ChevronRight className="w-3 h-3 mt-0.5 shrink-0 text-primary/60" />
+                                  <span>{detail}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    </CardContent>
+                  </Card>
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {/* Important Notice */}
-        <Card className="border-primary/20 bg-primary/5 animate-fade-in">
+        <Card className="border-primary/20 bg-primary/5 animate-fade-in backdrop-blur-sm" ref={bottomRef}>
           <CardContent className="p-5">
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
