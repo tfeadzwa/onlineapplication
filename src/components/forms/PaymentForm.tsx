@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Label } from "@/components/ui/label";
 import PhoneInput from "@/components/ui/phone-input";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,8 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
   const [phoneNumber, setPhoneNumber] = useState(data.phoneNumber || "");
   const [stage, setStage] = useState<PaymentStage>(alreadyPaid ? "success" : "input");
   const [countdown, setCountdown] = useState(0);
+  const [retryOpen, setRetryOpen] = useState(false);
+  const [retryPhone, setRetryPhone] = useState(data.phoneNumber || "");
 
   const txRef = useMemo(() => data.referenceNumber || `EC${Date.now().toString(36).toUpperCase()}`, [data.referenceNumber]);
   const txTime = useMemo(() => data.paymentDate ? new Date(data.paymentDate) : new Date(), [data.paymentDate]);
@@ -230,12 +233,81 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
           </div>
         }
       >
+        {/* Retry payment - collapsible at top */}
+        <Collapsible open={retryOpen} onOpenChange={setRetryOpen}>
+          <Card className={`border transition-colors ${retryOpen ? "border-primary/40 bg-primary/5" : "border-dashed border-muted-foreground/30 bg-muted/30"}`}>
+            <CollapsibleTrigger asChild>
+              <button type="button" className="w-full p-4 flex items-center gap-3 text-left hover:bg-muted/20 transition-colors rounded-lg">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${retryOpen ? "bg-primary/15" : "bg-muted"}`}>
+                  <RefreshCw className={`w-4 h-4 transition-transform ${retryOpen ? "text-primary rotate-180" : "text-muted-foreground"}`} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground">Payment didn't reach GZU?</p>
+                  <p className="text-xs text-muted-foreground">
+                    {retryOpen ? "Fill in the details below to retry" : "Click here to retry with a new transaction"}
+                  </p>
+                </div>
+                <ArrowRight className={`w-4 h-4 text-muted-foreground transition-transform ${retryOpen ? "rotate-90" : ""}`} />
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="px-4 pb-4 space-y-4 border-t border-border/50 pt-4 animate-fade-in">
+                {/* Inline fee card */}
+                <div className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-primary/20">
+                  <div className="flex items-center gap-2">
+                    <Smartphone className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium">EcoCash Mobile Money</span>
+                  </div>
+                  <span className="text-sm font-heading font-bold text-primary">USD $25.00</span>
+                </div>
+
+                {/* How it works - compact */}
+                <div className="text-xs text-muted-foreground bg-muted/50 rounded-lg p-3 space-y-0.5">
+                  <p>1. Enter your EcoCash number → 2. Click Pay → 3. Confirm PIN on phone</p>
+                </div>
+
+                {/* Phone input */}
+                <div className="space-y-2">
+                  <Label className="text-sm">EcoCash Phone Number *</Label>
+                  <PhoneInput
+                    value={retryPhone}
+                    onChange={setRetryPhone}
+                    placeholder="77 123 4567"
+                  />
+                </div>
+
+                <Button
+                  type="button"
+                  className="w-full"
+                  disabled={!retryPhone}
+                  onClick={() => {
+                    setPhoneNumber(retryPhone);
+                    setRetryOpen(false);
+                    setStage("waiting");
+                    setCountdown(30);
+                    const interval = setInterval(() => {
+                      setCountdown((prev) => {
+                        if (prev <= 1) { clearInterval(interval); return 0; }
+                        return prev - 1;
+                      });
+                    }, 1000);
+                    setTimeout(() => { clearInterval(interval); setStage("success"); }, 5000);
+                  }}
+                >
+                  <Smartphone className="w-4 h-4 mr-2" />
+                  Pay USD $25.00 via EcoCash
+                </Button>
+              </div>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
         {/* Success banner */}
-        <div className="flex flex-col items-center py-6 animate-fade-in">
-          <div className="relative mb-4">
-            <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
-              <div className="w-11 h-11 rounded-full bg-success flex items-center justify-center shadow-lg shadow-success/30">
-                <CheckCircle2 className="w-6 h-6 text-success-foreground" />
+        <div className="flex flex-col items-center py-4 animate-fade-in">
+          <div className="relative mb-3">
+            <div className="w-14 h-14 rounded-full bg-success/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-success flex items-center justify-center shadow-lg shadow-success/30">
+                <CheckCircle2 className="w-5 h-5 text-success-foreground" />
               </div>
             </div>
           </div>
@@ -244,68 +316,6 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
         </div>
 
         {/* Receipt Card */}
-        <Card className="border-2 border-success/20 shadow-lg shadow-success/5 overflow-hidden">
-          <div className="bg-success/5 px-6 py-4 flex items-center justify-between border-b border-success/10">
-            <div className="flex items-center gap-2">
-              <Receipt className="w-5 h-5 text-success" />
-              <span className="font-heading font-semibold text-sm">Payment Receipt</span>
-            </div>
-            <Badge className="bg-success/10 text-success border-success/20 text-xs">
-              <CheckCircle2 className="w-3 h-3 mr-1" />
-              Paid
-            </Badge>
-          </div>
-
-          <CardContent className="p-6 space-y-4">
-            <div className="text-center py-3 rounded-lg bg-muted/50">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Amount Paid</p>
-              <p className="text-3xl font-heading font-bold text-foreground">USD $25.00</p>
-            </div>
-
-            <Separator />
-
-            <div className="space-y-3">
-              {[
-                { icon: Hash, label: "Transaction Reference", value: txRef, mono: true },
-                { icon: Phone, label: "EcoCash Number", value: phoneNumber },
-                { icon: CreditCard, label: "Payment Method", value: "EcoCash Mobile Money" },
-                { icon: Calendar, label: "Date", value: formattedDate },
-                { icon: Clock, label: "Time", value: formattedTime },
-                { icon: User, label: "Description", value: "Application Processing Fee" },
-              ].map(({ icon: Icon, label, value, mono }) => (
-                <div key={label} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-muted-foreground">{label}</p>
-                    <p className={`text-sm font-semibold text-foreground truncate ${mono ? "font-mono" : ""}`}>{value}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-
-          <div className="bg-muted/30 px-6 py-3 border-t text-center">
-            <p className="text-xs text-muted-foreground">Keep this receipt for your records</p>
-          </div>
-        </Card>
-
-        {/* Retry payment */}
-        <Card className="border border-dashed border-muted-foreground/30 bg-muted/30">
-          <CardContent className="p-4 flex items-start gap-3">
-            <RefreshCw className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground mb-1">Payment didn't reach GZU?</p>
-              <p className="text-xs text-muted-foreground mb-3">
-                If your EcoCash was debited but the payment wasn't received by the university, you can retry with a new transaction.
-              </p>
-              <Button type="button" variant="outline" size="sm" onClick={() => setStage("input")}>
-                <RefreshCw className="w-3.5 h-3.5 mr-2" /> Pay Again
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       </FormWrapper>
     );
   }
