@@ -61,36 +61,98 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
     });
   };
 
-  const handleDownloadReceipt = () => {
+  const handleDownloadReceipt = async () => {
+    const { default: jsPDF } = await import("jspdf");
+    const QRCode = await import("qrcode");
+
     const formattedDate = txTime.toLocaleDateString("en-ZW", { year: "numeric", month: "long", day: "numeric" });
     const formattedTime = txTime.toLocaleTimeString("en-ZW", { hour: "2-digit", minute: "2-digit" });
-    const receipt = [
-      "═══════════════════════════════════════",
-      "         PAYMENT RECEIPT",
-      "    Great Zimbabwe University",
-      "═══════════════════════════════════════",
-      "",
-      `  Transaction Ref:  ${txRef}`,
-      `  Amount:           USD $25.00`,
-      `  Payment Method:   EcoCash Mobile Money`,
-      `  Phone Number:     ${phoneNumber}`,
-      `  Date:             ${formattedDate}`,
-      `  Time:             ${formattedTime}`,
-      `  Description:      Application Processing Fee`,
-      `  Status:           PAID ✓`,
-      "",
-      "═══════════════════════════════════════",
-      "  Keep this receipt for your records.",
-      "═══════════════════════════════════════",
-    ].join("\n");
 
-    const blob = new Blob([receipt], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `receipt-${txRef}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    const qrDataUrl = await QRCode.toDataURL(
+      `GZU-RECEIPT|${txRef}|USD25.00|${phoneNumber}|${txTime.toISOString()}`,
+      { width: 120, margin: 1 }
+    );
+
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const w = doc.internal.pageSize.getWidth();
+
+    // Header band
+    doc.setFillColor(22, 78, 99); // primary-ish teal
+    doc.rect(0, 0, w, 40, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text("Great Zimbabwe University", w / 2, 18, { align: "center" });
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.text("Online Application Payment Receipt", w / 2, 28, { align: "center" });
+
+    // Status badge
+    doc.setFillColor(34, 197, 94);
+    doc.roundedRect(w / 2 - 18, 44, 36, 10, 3, 3, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("PAID ✓", w / 2, 51, { align: "center" });
+
+    // Receipt details
+    const startY = 68;
+    const labelX = 25;
+    const valueX = 90;
+    const lineH = 12;
+
+    const rows = [
+      ["Transaction Reference", txRef],
+      ["Amount", "USD $25.00"],
+      ["Payment Method", "EcoCash Mobile Money"],
+      ["Phone Number", phoneNumber],
+      ["Date", formattedDate],
+      ["Time", formattedTime],
+      ["Description", "Application Processing Fee"],
+    ];
+
+    // Alternating row backgrounds
+    rows.forEach((_, i) => {
+      if (i % 2 === 0) {
+        doc.setFillColor(245, 247, 250);
+        doc.rect(20, startY + i * lineH - 4, w - 40, lineH, "F");
+      }
+    });
+
+    // Border around table
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(20, startY - 4, w - 40, rows.length * lineH, "S");
+
+    rows.forEach(([label, value], i) => {
+      const y = startY + i * lineH + 4;
+      doc.setTextColor(120, 120, 120);
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "normal");
+      doc.text(label, labelX, y);
+      doc.setTextColor(30, 30, 30);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.text(value, valueX, y);
+    });
+
+    // QR Code
+    const qrY = startY + rows.length * lineH + 15;
+    doc.addImage(qrDataUrl, "PNG", w / 2 - 20, qrY, 40, 40);
+    doc.setTextColor(140, 140, 140);
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    doc.text("Scan to verify this receipt", w / 2, qrY + 45, { align: "center" });
+
+    // Footer
+    const footerY = qrY + 58;
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, footerY, w - 20, footerY);
+    doc.setTextColor(160, 160, 160);
+    doc.setFontSize(7);
+    doc.text("This is a computer-generated receipt and does not require a signature.", w / 2, footerY + 6, { align: "center" });
+    doc.text(`© ${new Date().getFullYear()} Great Zimbabwe University. All rights reserved.`, w / 2, footerY + 11, { align: "center" });
+
+    doc.save(`GZU-Receipt-${txRef}.pdf`);
   };
 
   // ── Waiting for phone confirmation ──
