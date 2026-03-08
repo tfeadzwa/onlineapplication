@@ -61,6 +61,38 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
     });
   };
 
+  const handleDownloadReceipt = () => {
+    const formattedDate = txTime.toLocaleDateString("en-ZW", { year: "numeric", month: "long", day: "numeric" });
+    const formattedTime = txTime.toLocaleTimeString("en-ZW", { hour: "2-digit", minute: "2-digit" });
+    const receipt = [
+      "═══════════════════════════════════════",
+      "         PAYMENT RECEIPT",
+      "    Great Zimbabwe University",
+      "═══════════════════════════════════════",
+      "",
+      `  Transaction Ref:  ${txRef}`,
+      `  Amount:           USD $25.00`,
+      `  Payment Method:   EcoCash Mobile Money`,
+      `  Phone Number:     ${phoneNumber}`,
+      `  Date:             ${formattedDate}`,
+      `  Time:             ${formattedTime}`,
+      `  Description:      Application Processing Fee`,
+      `  Status:           PAID ✓`,
+      "",
+      "═══════════════════════════════════════",
+      "  Keep this receipt for your records.",
+      "═══════════════════════════════════════",
+    ].join("\n");
+
+    const blob = new Blob([receipt], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `receipt-${txRef}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   // ── Waiting for phone confirmation ──
   if (stage === "waiting") {
     return (
