@@ -230,7 +230,7 @@ const AcceptedOffer = () => {
         </div>
       </header>
 
-      <main className="container px-4 sm:px-6 py-8 max-w-4xl">
+      <main className="container px-4 sm:px-6 py-8 max-w-6xl">
         {/* Congratulations Banner */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 to-primary mb-8 p-8 sm:p-10 text-primary-foreground animate-fade-in">
           <div className="absolute top-4 right-4 opacity-10">
