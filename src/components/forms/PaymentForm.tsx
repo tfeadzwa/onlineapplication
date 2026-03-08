@@ -25,6 +25,10 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
   const [stage, setStage] = useState<PaymentStage>("input");
   const [countdown, setCountdown] = useState(0);
 
+  const txRef = useMemo(() => `EC${Date.now().toString(36).toUpperCase()}`, []);
+  const txTime = useMemo(() => new Date(), []);
+  const [countdown, setCountdown] = useState(0);
+
   const handleInitiatePayment = (e: React.FormEvent) => {
     e.preventDefault();
     setStage("waiting");
