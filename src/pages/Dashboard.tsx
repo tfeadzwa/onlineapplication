@@ -126,19 +126,28 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 animate-fade-in">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 animate-fade-in">
           {stats.map((stat) => (
-            <Card key={stat.label} className="overflow-hidden group hover:shadow-md transition-all duration-200">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`w-9 h-9 rounded-lg bg-primary/8 flex items-center justify-center ${stat.color}`}>
-                    <stat.icon className="w-4.5 h-4.5" />
-                  </div>
-                  <span className="text-2xl font-heading font-bold">{stat.value}</span>
+            <div
+              key={stat.label}
+              className="relative overflow-hidden rounded-2xl border bg-card p-5 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="flex items-start justify-between">
+                <div className={`w-11 h-11 rounded-xl ${
+                  stat.label === "Total" ? "bg-primary/10" :
+                  stat.label === "Drafts" ? "bg-muted" :
+                  stat.label === "In Progress" ? "bg-accent/10" :
+                  "bg-primary/10"
+                } flex items-center justify-center`}>
+                  <stat.icon className={`w-5 h-5 ${stat.color}`} />
                 </div>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{stat.label}</p>
-              </CardContent>
-            </Card>
+                <span className="text-3xl font-heading font-extrabold tracking-tight">{stat.value}</span>
+              </div>
+              <p className="text-[11px] text-muted-foreground font-semibold uppercase tracking-[0.15em] mt-4">{stat.label}</p>
+              <div className={`absolute -bottom-6 -right-6 w-20 h-20 rounded-full opacity-[0.04] ${
+                stat.label === "Accepted" ? "bg-primary" : "bg-foreground"
+              }`} />
+            </div>
           ))}
         </div>
 
