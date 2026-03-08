@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Smartphone, CheckCircle2, ArrowRight, Loader2, Phone, Receipt, Calendar, Hash, CreditCard, Clock, Download, RefreshCw, ChevronDown } from "lucide-react";
 import FormWrapper from "./FormWrapper";
+import ecocashLogo from "@/assets/ecocash-logo.png";
 
 interface PaymentRecord {
   referenceNumber: string;
