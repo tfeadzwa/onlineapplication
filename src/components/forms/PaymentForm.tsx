@@ -262,9 +262,21 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
                 </div>
 
                 {/* How it works - compact */}
-                <div className="text-xs text-muted-foreground bg-muted/50 rounded-lg p-3 space-y-0.5">
-                  <p>1. Enter your EcoCash number → 2. Click Pay → 3. Confirm PIN on phone</p>
+                <div className="text-xs text-muted-foreground bg-muted/50 rounded-lg p-3 space-y-1.5">
+                  <div className="flex items-start gap-1.5">
+                    <span className="font-bold text-primary">1.</span>
+                    <span>Enter your <span className="font-medium text-foreground">EcoCash registered number</span> below</span>
+                  </div>
+                  <div className="flex items-start gap-1.5">
+                    <span className="font-bold text-primary">2.</span>
+                    <span>Click <span className="font-medium text-foreground">"Pay via EcoCash"</span></span>
+                  </div>
+                  <div className="flex items-start gap-1.5">
+                    <span className="font-bold text-primary">3.</span>
+                    <span>Authorize the payment by entering your <span className="font-medium text-foreground">EcoCash PIN</span> on the USSD prompt</span>
+                  </div>
                 </div>
+                <p className="text-xs text-muted-foreground">⚠ Ensure your account has at least <span className="font-medium text-foreground">USD $25.00</span> balance. Do not close this page during processing.</p>
 
                 {/* Phone input */}
                 <div className="space-y-2">
@@ -364,14 +376,43 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
 
       {/* How it works */}
       <Card className="bg-muted/50">
-        <CardContent className="p-4">
-          <p className="text-sm font-heading font-semibold mb-2">How It Works</p>
-          <div className="text-sm text-muted-foreground space-y-1">
-            <p>1. Enter your EcoCash mobile number below</p>
-            <p>2. Click <span className="font-semibold text-foreground">"Pay via EcoCash"</span></p>
-            <p>3. A payment prompt will appear on your phone</p>
-            <p>4. Enter your EcoCash PIN to confirm the payment</p>
+        <CardContent className="p-4 space-y-3">
+          <p className="text-sm font-heading font-semibold">How It Works</p>
+          <div className="text-sm text-muted-foreground space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+              <p>Enter your <span className="font-semibold text-foreground">EcoCash registered mobile number</span> in the field below</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+              <p>Click the <span className="font-semibold text-foreground">"Pay USD $25.00 via EcoCash"</span> button</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+              <p>A <span className="font-semibold text-foreground">USSD prompt</span> will appear on your phone asking you to authorize the payment</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+              <p>Enter your <span className="font-semibold text-foreground">EcoCash PIN</span> to confirm and complete the payment</p>
+            </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Important notes */}
+      <Card className="bg-muted/50 border-destructive/20">
+        <CardContent className="p-4 space-y-2">
+          <p className="text-sm font-heading font-semibold flex items-center gap-2">
+            <span className="text-destructive">⚠</span> Important Notes
+          </p>
+          <ul className="text-xs text-muted-foreground space-y-1.5 list-disc pl-4">
+            <li>Ensure your EcoCash account has a <span className="font-medium text-foreground">minimum balance of USD $25.00</span></li>
+            <li>The phone number must be <span className="font-medium text-foreground">registered with EcoCash</span></li>
+            <li>Do <span className="font-medium text-foreground">not close this page</span> while the payment is being processed</li>
+            <li>If you do not receive a prompt within 30 seconds, try again or contact EcoCash support at <span className="font-medium text-foreground">*151#</span></li>
+            <li>This is a <span className="font-medium text-foreground">non-refundable</span> application processing fee</li>
+            <li>You will receive an <span className="font-medium text-foreground">SMS confirmation</span> from EcoCash once the payment is successful</li>
+          </ul>
         </CardContent>
       </Card>
 
@@ -384,7 +425,7 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
           placeholder="77 123 4567"
           required
         />
-        <p className="text-xs text-muted-foreground">The EcoCash number that will be charged USD $25.00</p>
+        <p className="text-xs text-muted-foreground">The EcoCash number that will be charged USD $25.00. Must be a registered EcoCash number.</p>
       </div>
     </FormWrapper>
   );
