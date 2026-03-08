@@ -3,8 +3,13 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 export interface User {
   id: string;
   fullName: string;
+  firstName: string;
+  lastName: string;
+  middleName?: string;
   email: string;
   nationalId: string;
+  country: string;
+  phone?: string;
 }
 
 export interface Application {
