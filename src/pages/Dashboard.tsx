@@ -302,7 +302,15 @@ const Dashboard = () => {
                           </DropdownMenu>
                         )}
 
-                        <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                        {isAccepted && (
+                          <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] shrink-0">
+                            View Offer →
+                          </Badge>
+                        )}
+
+                        {!isAccepted && (
+                          <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                        )}
                       </div>
                     </div>
 
