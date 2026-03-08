@@ -103,7 +103,7 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <main className="container px-4 sm:px-6 py-8 max-w-5xl">
+      <main className="container px-4 sm:px-6 py-8 max-w-6xl">
         {/* Welcome Section */}
         <div className="mb-8 animate-fade-in">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">

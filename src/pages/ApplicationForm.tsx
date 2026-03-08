@@ -203,7 +203,7 @@ const ApplicationForm = () => {
           </div>
 
           {/* Form Content */}
-          <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto animate-fade-in">
+          <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto animate-fade-in">
             {currentStep === 0 && <StudentInfoForm {...formProps} />}
             {currentStep === 1 && <ContactDetailsForm {...formProps} />}
             {currentStep === 2 && <MatureEntryForm {...formProps} />}
