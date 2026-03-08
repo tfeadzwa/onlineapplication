@@ -99,6 +99,12 @@ const ForgotPassword = () => {
     return (
       <AuthLayout title="Verify your identity" subtitle={`Confirm your identity for ${email}`}>
         <form onSubmit={handleVerifySubmit} className="space-y-4">
+          {error && (
+            <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive animate-fade-in">
+              <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="country">Country</Label>
             <CountrySelect
@@ -106,6 +112,7 @@ const ForgotPassword = () => {
               onValueChange={(v) => {
                 setCountry(v);
                 setNationalId("");
+                setError("");
               }}
             />
           </div>
@@ -115,7 +122,7 @@ const ForgotPassword = () => {
               id="nationalId"
               placeholder={country === "zimbabwe" ? "e.g. 45-202231J45" : "Enter your national ID number"}
               value={nationalId}
-              onChange={(e) => setNationalId(e.target.value)}
+              onChange={(e) => { setNationalId(e.target.value); setError(""); }}
               required
             />
             {country === "zimbabwe" && (
