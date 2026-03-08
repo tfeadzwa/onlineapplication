@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   GraduationCap, Plus, LogOut, FileText, Clock, CheckCircle, XCircle, Eye,
   Trash2, Edit, RotateCcw, TrendingUp, Send, Layers, CalendarDays, ArrowRight,
-  Sparkles, MoreHorizontal,
+  Sparkles, MoreHorizontal, UserCircle,
 } from "lucide-react";
 import { format } from "date-fns";
 import {
