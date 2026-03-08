@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Label } from "@/components/ui/label";
 import PhoneInput from "@/components/ui/phone-input";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
