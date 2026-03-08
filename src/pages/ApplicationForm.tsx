@@ -86,7 +86,7 @@ const ApplicationForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <header className="border-b bg-card sticky top-0 z-50">
         <div className="flex items-center h-14 px-4 gap-4">
