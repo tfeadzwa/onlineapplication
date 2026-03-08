@@ -114,7 +114,7 @@ const ApplicationForm = () => {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Side Stepper - Desktop */}
-        <aside className="hidden lg:flex w-72 border-r bg-card flex-col shrink-0 overflow-y-auto">
+        <aside className="hidden lg:flex w-72 border-r bg-card flex-col shrink-0 overflow-y-auto scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none]">
           <div className="p-4 border-b">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Progress</p>
             <p className="text-2xl font-heading font-bold text-primary mt-1">{progress}%</p>
