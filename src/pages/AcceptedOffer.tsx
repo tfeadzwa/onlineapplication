@@ -19,6 +19,11 @@ const AcceptedOffer = () => {
   const { user, applications } = useAuth();
   const navigate = useNavigate();
 
+  const [viewedSteps, setViewedSteps] = useState<Set<number>>(new Set());
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
   const app = applications.find((a) => a.id === id);
 
   if (!app || app.status !== "accepted") {
