@@ -172,11 +172,81 @@ const Dashboard = () => {
               const isSubmitted = app.status === "submitted";
               const isAccepted = app.status === "accepted";
 
+              if (isAccepted) {
+                const data = app.data || {};
+                const programme = data.programme1 || "Programme pending";
+                const faculty = data.faculty1 || "Faculty pending";
+                const intakeYear = data.intakeYear || new Date().getFullYear().toString();
+                const regNumber = `GZU/${intakeYear.slice(-2)}/${app.id.slice(0, 6).toUpperCase()}`;
+
+                return (
+                  <Card
+                    key={app.id}
+                    className="animate-fade-in group hover:shadow-lg border-primary/25 bg-gradient-to-br from-primary/[0.03] to-transparent transition-all duration-300 cursor-pointer overflow-hidden"
+                    onClick={() => navigate(`/accepted/${app.id}`)}
+                  >
+                    <CardContent className="p-0">
+                      {/* Accent top bar */}
+                      <div className="h-1 bg-gradient-to-r from-primary via-primary/70 to-primary/30" />
+
+                      <div className="p-5 sm:p-6">
+                        <div className="flex items-start gap-4">
+                          {/* Icon */}
+                          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 ring-2 ring-primary/20">
+                            <GraduationCap className="w-6 h-6 text-primary" />
+                          </div>
+
+                          {/* Main Info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2">
+                              <p className="font-heading font-bold text-sm">
+                                Application #{app.id.slice(0, 8).toUpperCase()}
+                              </p>
+                              <Badge variant="outline" className="text-[10px] px-2 py-0 h-5 shrink-0 bg-primary/10 text-primary border-primary/25">
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                                Accepted
+                              </Badge>
+                            </div>
+
+                            {/* Programme Details */}
+                            <div className="space-y-1.5 mb-3">
+                              <p className="text-sm font-semibold text-foreground truncate">{programme}</p>
+                              <p className="text-xs text-muted-foreground truncate">{faculty}</p>
+                            </div>
+
+                            {/* Meta pills */}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/60 rounded-md px-2 py-1">
+                                <CalendarDays className="w-3 h-3" />
+                                Intake {intakeYear}
+                              </span>
+                              <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/60 rounded-md px-2 py-1 font-mono">
+                                {regNumber}
+                              </span>
+                              <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/60 rounded-md px-2 py-1">
+                                <CalendarDays className="w-3 h-3" />
+                                {format(new Date(app.createdAt), "dd MMM yyyy")}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* CTA */}
+                          <Button variant="outline" size="sm" className="shrink-0 border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground transition-colors text-xs gap-1.5">
+                            View Offer
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              }
+
               return (
                 <Card
                   key={app.id}
                   className="animate-fade-in group hover:shadow-md hover:border-primary/20 transition-all duration-200 cursor-pointer"
-                  onClick={() => isAccepted ? navigate(`/accepted/${app.id}`) : navigate(`/apply/${app.id}`)}
+                  onClick={() => navigate(`/apply/${app.id}`)}
                 >
                   <CardContent className="p-0">
                     <div className="flex items-center gap-4 p-4 sm:p-5">
@@ -302,15 +372,7 @@ const Dashboard = () => {
                           </DropdownMenu>
                         )}
 
-                        {isAccepted && (
-                          <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] shrink-0">
-                            View Offer →
-                          </Badge>
-                        )}
-
-                        {!isAccepted && (
-                          <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                        )}
+                        <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     </div>
 
