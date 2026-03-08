@@ -89,7 +89,7 @@ const ContactDetailsForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =>
           </div>
           <div className="space-y-2">
             <Label>Phone *</Label>
-            <Input value={form.nextOfKinPhone} onChange={(e) => update("nextOfKinPhone", e.target.value)} placeholder="e.g. +263 7X XXX XXXX" required />
+            <PhoneInput value={form.nextOfKinPhone} onChange={(v) => update("nextOfKinPhone", v)} placeholder="7X XXX XXXX" required />
           </div>
           <div className="space-y-2">
             <Label>Relationship *</Label>

@@ -155,10 +155,10 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>EcoCash Phone Number *</Label>
-            <Input
+            <PhoneInput
               value={form.phoneNumber}
-              onChange={(e) => update("phoneNumber", e.target.value)}
-              placeholder="e.g. 0771234567"
+              onChange={(v) => update("phoneNumber", v)}
+              placeholder="77 123 4567"
               required
             />
             <p className="text-xs text-muted-foreground">The number you used to make the payment</p>
