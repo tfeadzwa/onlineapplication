@@ -112,10 +112,16 @@ const Dashboard = () => {
               <h1 className="text-3xl font-heading font-bold tracking-tight">{firstName} 👋</h1>
               <p className="text-muted-foreground mt-1">Here's an overview of your applications.</p>
             </div>
-            <Button onClick={handleNewApplication} size="lg" className="shadow-md hover:shadow-lg transition-shadow">
-              <Plus className="w-4 h-4 mr-2" />
-              New Application
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleTestAccepted} className="text-xs">
+                <CheckCircle className="w-3 h-3 mr-1" />
+                Test Accepted
+              </Button>
+              <Button onClick={handleNewApplication} size="lg" className="shadow-md hover:shadow-lg transition-shadow">
+                <Plus className="w-4 h-4 mr-2" />
+                New Application
+              </Button>
+            </div>
           </div>
         </div>
 
