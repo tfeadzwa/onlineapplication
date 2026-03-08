@@ -15,9 +15,11 @@ const ForgotPassword = () => {
   const [country, setCountry] = useState("zimbabwe");
   const [nationalId, setNationalId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     setLoading(true);
     setTimeout(() => {
       const users = JSON.parse(localStorage.getItem("gz_users") || "[]");
@@ -25,7 +27,7 @@ const ForgotPassword = () => {
       if (found) {
         setStep("verify");
       } else {
-        toast.error("No account found with this email address.");
+        setError("No account found with this email address. Please check and try again.");
       }
       setLoading(false);
     }, 600);
@@ -33,9 +35,10 @@ const ForgotPassword = () => {
 
   const handleVerifySubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
     if (country === "zimbabwe" && !ZW_ID_REGEX.test(nationalId)) {
-      toast.error("Invalid Zimbabwean National ID. Expected format: 45-202231J45");
+      setError("Invalid Zimbabwean National ID. Expected format: 45-202231J45");
       return;
     }
 
@@ -54,7 +57,7 @@ const ForgotPassword = () => {
         );
         setStep("sent");
       } else {
-        toast.error("National ID does not match our records for this email.");
+        setError("National ID does not match our records for this email.");
       }
       setLoading(false);
     }, 800);
