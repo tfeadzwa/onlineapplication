@@ -160,174 +160,175 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="font-heading font-semibold text-lg">Your Applications</h2>
-              <span className="text-xs font-medium text-muted-foreground bg-muted px-3 py-1 rounded-full">{applications.length} total</span>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-heading font-semibold text-lg">Applications</h2>
+              <span className="text-sm text-muted-foreground">{applications.length} total</span>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {applications.map((app) => {
-                const config = statusConfig[app.status];
-                const StatusIcon = config.icon;
-                const isDraft = app.status === "draft";
-                const isSubmitted = app.status === "submitted";
-                const isAccepted = app.status === "accepted";
-                const progress = Math.round((app.currentStep / 10) * 100);
+            {applications.map((app) => {
+              const config = statusConfig[app.status];
+              const StatusIcon = config.icon;
+              const isDraft = app.status === "draft";
+              const isSubmitted = app.status === "submitted";
+              const isAccepted = app.status === "accepted";
 
-                return (
-                  <Card
-                    key={app.id}
-                    className={`animate-fade-in group relative overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 ${
-                      isAccepted ? "border-success/30 bg-gradient-to-br from-card to-success/5" : "hover:border-primary/30"
-                    }`}
-                    onClick={() => isAccepted ? navigate(`/accepted/${app.id}`) : navigate(`/apply/${app.id}`)}
-                  >
-                    {/* Top accent bar */}
-                    <div className={`h-1 w-full ${
-                      isAccepted ? "bg-success" : isSubmitted ? "bg-accent" : isDraft ? "bg-primary/40" : "bg-muted"
-                    }`} />
+              return (
+                <Card
+                  key={app.id}
+                  className="animate-fade-in group hover:shadow-md hover:border-primary/20 transition-all duration-200 cursor-pointer"
+                  onClick={() => isAccepted ? navigate(`/accepted/${app.id}`) : navigate(`/apply/${app.id}`)}
+                >
+                  <CardContent className="p-0">
+                    <div className="flex items-center gap-4 p-4 sm:p-5">
+                      {/* Icon */}
+                      <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
+                        <GraduationCap className="w-5 h-5 text-primary" />
+                      </div>
 
-                    <CardContent className="p-5 pt-4">
-                      {/* Header row */}
-                      <div className="flex items-start justify-between mb-4">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                          isAccepted ? "bg-success/15 text-success" : "bg-primary/10 text-primary group-hover:bg-primary/20"
-                        }`}>
-                          {isAccepted ? <CheckCircle className="w-5 h-5" /> : <GraduationCap className="w-5 h-5" />}
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-heading font-semibold text-sm truncate">
+                            Application #{app.id.slice(0, 8).toUpperCase()}
+                          </p>
+                          <Badge variant="outline" className={`text-[10px] px-2 py-0 h-5 shrink-0 ${config.className}`}>
+                            <StatusIcon className="w-3 h-3 mr-1" />
+                            {config.label}
+                          </Badge>
                         </div>
-                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                          {isDraft && (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <MoreHorizontal className="w-4 h-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => navigate(`/apply/${app.id}`)}>
-                                  <Edit className="w-4 h-4 mr-2" /> Continue Editing
-                                </DropdownMenuItem>
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={(e) => e.preventDefault()}>
-                                      <Trash2 className="w-4 h-4 mr-2" /> Delete Draft
-                                    </DropdownMenuItem>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Delete Draft?</AlertDialogTitle>
-                                      <AlertDialogDescription>This will permanently delete this application draft.</AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Keep</AlertDialogCancel>
-                                      <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={(e) => handleDelete(e, app.id)}>Delete</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          )}
-                          {isSubmitted && (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <MoreHorizontal className="w-4 h-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                      <Edit className="w-4 h-4 mr-2" /> Withdraw & Edit
-                                    </DropdownMenuItem>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Edit Submitted Application?</AlertDialogTitle>
-                                      <AlertDialogDescription>This will withdraw your submission and move it back to draft.</AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Keep Submitted</AlertDialogCancel>
-                                      <AlertDialogAction onClick={(e) => { handleReopen(e, app.id); navigate(`/apply/${app.id}`); }}>Withdraw & Edit</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={(e) => e.preventDefault()}>
-                                      <XCircle className="w-4 h-4 mr-2" /> Cancel Application
-                                    </DropdownMenuItem>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Cancel Application?</AlertDialogTitle>
-                                      <AlertDialogDescription>This will withdraw your submitted application and move it back to draft.</AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Keep</AlertDialogCancel>
-                                      <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={(e) => handleCancel(e, app.id)}>Cancel Application</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <CalendarDays className="w-3 h-3" />
+                            {format(new Date(app.createdAt), "dd MMM yyyy")}
+                          </span>
+                          {app.currentStep > 0 && (
+                            <span className="flex items-center gap-1">
+                              <TrendingUp className="w-3 h-3" />
+                              Step {app.currentStep} of 10
+                            </span>
                           )}
                         </div>
                       </div>
 
-                      {/* App ID & Status */}
-                      <p className="font-heading font-bold text-base mb-1 tracking-tight">
-                        #{app.id.slice(0, 8).toUpperCase()}
-                      </p>
-                      <Badge variant="outline" className={`text-[10px] px-2.5 py-0.5 h-5 mb-3 ${config.className}`}>
-                        <StatusIcon className="w-3 h-3 mr-1" />
-                        {config.label}
-                      </Badge>
+                      {/* Actions */}
+                      <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                        {isDraft && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <MoreHorizontal className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => navigate(`/apply/${app.id}`)}>
+                                <Edit className="w-4 h-4 mr-2" /> Continue Editing
+                              </DropdownMenuItem>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={(e) => e.preventDefault()}>
+                                    <Trash2 className="w-4 h-4 mr-2" /> Delete Draft
+                                  </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete Draft?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This will permanently delete this application draft. This action cannot be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Keep</AlertDialogCancel>
+                                    <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={(e) => handleDelete(e, app.id)}>
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
 
-                      {/* Meta */}
-                      <div className="flex items-center gap-3 text-[11px] text-muted-foreground mb-4">
-                        <span className="flex items-center gap-1">
-                          <CalendarDays className="w-3 h-3" />
-                          {format(new Date(app.createdAt), "dd MMM yyyy")}
-                        </span>
-                        {app.currentStep > 0 && (
-                          <span className="flex items-center gap-1">
-                            <TrendingUp className="w-3 h-3" />
-                            Step {app.currentStep}/10
-                          </span>
+                        {isSubmitted && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <MoreHorizontal className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                    <Edit className="w-4 h-4 mr-2" /> Withdraw & Edit
+                                  </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Edit Submitted Application?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This will withdraw your submission and move it back to draft so you can make changes.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Keep Submitted</AlertDialogCancel>
+                                    <AlertDialogAction onClick={(e) => { handleReopen(e, app.id); navigate(`/apply/${app.id}`); }}>
+                                      Withdraw & Edit
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={(e) => e.preventDefault()}>
+                                    <XCircle className="w-4 h-4 mr-2" /> Cancel Application
+                                  </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Cancel Application?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This will withdraw your submitted application and move it back to draft status.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Keep</AlertDialogCancel>
+                                    <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={(e) => handleCancel(e, app.id)}>
+                                      Cancel Application
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+
+                        {isAccepted && (
+                          <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] shrink-0">
+                            View Offer →
+                          </Badge>
+                        )}
+
+                        {!isAccepted && (
+                          <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                         )}
                       </div>
+                    </div>
 
-                      {/* Progress or CTA */}
-                      {isDraft && app.currentStep > 0 ? (
-                        <div>
-                          <div className="flex items-center justify-between text-[11px] mb-1.5">
-                            <span className="text-muted-foreground font-medium">Progress</span>
-                            <span className="font-semibold text-primary">{progress}%</span>
-                          </div>
-                          <div className="h-2 rounded-full bg-muted overflow-hidden">
-                            <div className="h-full rounded-full bg-primary transition-all duration-500" style={{ width: `${progress}%` }} />
-                          </div>
+                    {/* Progress bar for drafts */}
+                    {isDraft && app.currentStep > 0 && (
+                      <div className="px-5 pb-4">
+                        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-primary/60 transition-all duration-500"
+                            style={{ width: `${(app.currentStep / 10) * 100}%` }}
+                          />
                         </div>
-                      ) : isAccepted ? (
-                        <Button variant="outline" size="sm" className="w-full border-success/30 text-success hover:bg-success/10 hover:text-success font-semibold text-xs">
-                          View Offer <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-                        </Button>
-                      ) : isDraft ? (
-                        <Button variant="outline" size="sm" className="w-full text-xs text-muted-foreground group-hover:text-primary group-hover:border-primary/30 transition-colors">
-                          Continue Application <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-                        </Button>
-                      ) : (
-                        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                          <Clock className="w-3 h-3 animate-pulse" />
-                          <span>Awaiting review</span>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
       </main>
