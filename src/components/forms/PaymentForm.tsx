@@ -21,12 +21,13 @@ const APPLICATION_FEE = 25;
 type PaymentStage = "input" | "waiting" | "success";
 
 const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
+  const alreadyPaid = !!(data.referenceNumber && data.paymentDate);
   const [phoneNumber, setPhoneNumber] = useState(data.phoneNumber || "");
-  const [stage, setStage] = useState<PaymentStage>("input");
+  const [stage, setStage] = useState<PaymentStage>(alreadyPaid ? "success" : "input");
   const [countdown, setCountdown] = useState(0);
 
-  const txRef = useMemo(() => `EC${Date.now().toString(36).toUpperCase()}`, []);
-  const txTime = useMemo(() => new Date(), []);
+  const txRef = useMemo(() => data.referenceNumber || `EC${Date.now().toString(36).toUpperCase()}`, [data.referenceNumber]);
+  const txTime = useMemo(() => data.paymentDate ? new Date(data.paymentDate) : new Date(), [data.paymentDate]);
 
   const handleInitiatePayment = (e: React.FormEvent) => {
     e.preventDefault();
