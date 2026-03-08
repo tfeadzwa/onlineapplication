@@ -159,12 +159,13 @@ const Dashboard = () => {
               const StatusIcon = config.icon;
               const isDraft = app.status === "draft";
               const isSubmitted = app.status === "submitted";
+              const isAccepted = app.status === "accepted";
 
               return (
                 <Card
                   key={app.id}
                   className="animate-fade-in group hover:shadow-md hover:border-primary/20 transition-all duration-200 cursor-pointer"
-                  onClick={() => navigate(`/apply/${app.id}`)}
+                  onClick={() => isAccepted ? navigate(`/accepted/${app.id}`) : navigate(`/apply/${app.id}`)}
                 >
                   <CardContent className="p-0">
                     <div className="flex items-center gap-4 p-4 sm:p-5">
