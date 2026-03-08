@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import {
   GraduationCap, ArrowLeft, Download, CheckCircle, BookOpen,
   DollarSign, Home, HeartPulse, Calendar, ClipboardList, PartyPopper,
-  ChevronRight, Building2, MapPin, Clock,
+  ChevronRight, Building2, MapPin, Clock, AlertTriangle, ScrollText, Eye,
 } from "lucide-react";
 import { format } from "date-fns";
+import { useState, useEffect, useRef, useCallback } from "react";
 import jsPDF from "jspdf";
 
 const AcceptedOffer = () => {
