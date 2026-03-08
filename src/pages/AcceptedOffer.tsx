@@ -24,6 +24,38 @@ const AcceptedOffer = () => {
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  const handleStepIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const idx = Number(entry.target.getAttribute("data-step-index"));
+        if (!isNaN(idx)) {
+          setViewedSteps((prev) => new Set([...prev, idx]));
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleStepIntersection, {
+      threshold: 0.5,
+      rootMargin: "0px",
+    });
+    stepRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+    return () => observer.disconnect();
+  }, [handleStepIntersection]);
+
+  useEffect(() => {
+    if (!bottomRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setHasScrolledToBottom(true); },
+      { threshold: 0.5 }
+    );
+    observer.observe(bottomRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const app = applications.find((a) => a.id === id);
 
   if (!app || app.status !== "accepted") {
