@@ -38,6 +38,17 @@ interface AuthContextType {
   reopenApplication: (id: string) => void;
 }
 
+export interface RegisterData {
+  fullName: string;
+  firstName: string;
+  lastName: string;
+  middleName?: string;
+  email: string;
+  nationalId: string;
+  country: string;
+  password: string;
+}
+
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useAuth = () => {
