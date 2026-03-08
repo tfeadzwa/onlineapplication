@@ -20,6 +20,16 @@ const ForgotPassword = () => {
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!email.trim()) {
+      setError("Please enter your email address.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
     setTimeout(() => {
       const users = JSON.parse(localStorage.getItem("gz_users") || "[]");
@@ -36,6 +46,11 @@ const ForgotPassword = () => {
   const handleVerifySubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!nationalId.trim()) {
+      setError("Please enter your National ID number.");
+      return;
+    }
 
     if (country === "zimbabwe" && !ZW_ID_REGEX.test(nationalId)) {
       setError("Invalid Zimbabwean National ID. Expected format: 45-202231J45");
@@ -123,7 +138,6 @@ const ForgotPassword = () => {
               placeholder={country === "zimbabwe" ? "e.g. 45-202231J45" : "Enter your national ID number"}
               value={nationalId}
               onChange={(e) => { setNationalId(e.target.value); setError(""); }}
-              required
             />
             {country === "zimbabwe" && (
               <p className="text-xs text-muted-foreground">
@@ -166,7 +180,6 @@ const ForgotPassword = () => {
             placeholder="you@example.com"
             value={email}
             onChange={(e) => { setEmail(e.target.value); setError(""); }}
-            required
           />
         </div>
         <Button type="submit" className="w-full" size="lg" disabled={loading}>
