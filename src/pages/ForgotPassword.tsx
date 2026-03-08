@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CountrySelect } from "@/components/ui/country-select";
-import { toast } from "sonner";
-import { ArrowLeft, Mail } from "lucide-react";
+import { ArrowLeft, Mail, AlertCircle } from "lucide-react";
 
 const ZW_ID_REGEX = /^\d{2}-\d{6}[A-Za-z]\d{2}$/;
 
@@ -16,9 +15,11 @@ const ForgotPassword = () => {
   const [country, setCountry] = useState("zimbabwe");
   const [nationalId, setNationalId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     setLoading(true);
     setTimeout(() => {
       const users = JSON.parse(localStorage.getItem("gz_users") || "[]");
@@ -26,7 +27,7 @@ const ForgotPassword = () => {
       if (found) {
         setStep("verify");
       } else {
-        toast.error("No account found with this email address.");
+        setError("No account found with this email address. Please check and try again.");
       }
       setLoading(false);
     }, 600);
@@ -34,9 +35,10 @@ const ForgotPassword = () => {
 
   const handleVerifySubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
     if (country === "zimbabwe" && !ZW_ID_REGEX.test(nationalId)) {
-      toast.error("Invalid Zimbabwean National ID. Expected format: 45-202231J45");
+      setError("Invalid Zimbabwean National ID. Expected format: 45-202231J45");
       return;
     }
 
@@ -55,7 +57,7 @@ const ForgotPassword = () => {
         );
         setStep("sent");
       } else {
-        toast.error("National ID does not match our records for this email.");
+        setError("National ID does not match our records for this email.");
       }
       setLoading(false);
     }, 800);
@@ -97,6 +99,12 @@ const ForgotPassword = () => {
     return (
       <AuthLayout title="Verify your identity" subtitle={`Confirm your identity for ${email}`}>
         <form onSubmit={handleVerifySubmit} className="space-y-4">
+          {error && (
+            <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive animate-fade-in">
+              <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="country">Country</Label>
             <CountrySelect
@@ -104,6 +112,7 @@ const ForgotPassword = () => {
               onValueChange={(v) => {
                 setCountry(v);
                 setNationalId("");
+                setError("");
               }}
             />
           </div>
@@ -113,7 +122,7 @@ const ForgotPassword = () => {
               id="nationalId"
               placeholder={country === "zimbabwe" ? "e.g. 45-202231J45" : "Enter your national ID number"}
               value={nationalId}
-              onChange={(e) => setNationalId(e.target.value)}
+              onChange={(e) => { setNationalId(e.target.value); setError(""); }}
               required
             />
             {country === "zimbabwe" && (
@@ -143,6 +152,12 @@ const ForgotPassword = () => {
   return (
     <AuthLayout title="Forgot password?" subtitle="Enter your email to get started">
       <form onSubmit={handleEmailSubmit} className="space-y-4">
+        {error && (
+          <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive animate-fade-in">
+            <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
         <div className="space-y-2">
           <Label htmlFor="email">Email Address</Label>
           <Input
@@ -150,7 +165,7 @@ const ForgotPassword = () => {
             type="email"
             placeholder="you@example.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { setEmail(e.target.value); setError(""); }}
             required
           />
         </div>
