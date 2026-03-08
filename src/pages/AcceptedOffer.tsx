@@ -252,41 +252,8 @@ const AcceptedOffer = () => {
     doc.save(`GZU_Acceptance_Letter_${regNumber.replace(/\//g, "_")}.pdf`);
   };
 
-
   const allStepsViewed = viewedSteps.size === nextSteps.length;
   const readProgress = Math.round((viewedSteps.size / nextSteps.length) * 100);
-
-  const handleStepIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const idx = Number(entry.target.getAttribute("data-step-index"));
-        if (!isNaN(idx)) {
-          setViewedSteps((prev) => new Set([...prev, idx]));
-        }
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleStepIntersection, {
-      threshold: 0.5,
-      rootMargin: "0px",
-    });
-    stepRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-    return () => observer.disconnect();
-  }, [handleStepIntersection]);
-
-  useEffect(() => {
-    if (!bottomRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setHasScrolledToBottom(true); },
-      { threshold: 0.5 }
-    );
-    observer.observe(bottomRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
