@@ -364,14 +364,43 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
 
       {/* How it works */}
       <Card className="bg-muted/50">
-        <CardContent className="p-4">
-          <p className="text-sm font-heading font-semibold mb-2">How It Works</p>
-          <div className="text-sm text-muted-foreground space-y-1">
-            <p>1. Enter your EcoCash mobile number below</p>
-            <p>2. Click <span className="font-semibold text-foreground">"Pay via EcoCash"</span></p>
-            <p>3. A payment prompt will appear on your phone</p>
-            <p>4. Enter your EcoCash PIN to confirm the payment</p>
+        <CardContent className="p-4 space-y-3">
+          <p className="text-sm font-heading font-semibold">How It Works</p>
+          <div className="text-sm text-muted-foreground space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+              <p>Enter your <span className="font-semibold text-foreground">EcoCash registered mobile number</span> in the field below</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+              <p>Click the <span className="font-semibold text-foreground">"Pay USD $25.00 via EcoCash"</span> button</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+              <p>A <span className="font-semibold text-foreground">USSD prompt</span> will appear on your phone asking you to authorize the payment</p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+              <p>Enter your <span className="font-semibold text-foreground">EcoCash PIN</span> to confirm and complete the payment</p>
+            </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Important notes */}
+      <Card className="bg-muted/50 border-amber-500/20">
+        <CardContent className="p-4 space-y-2">
+          <p className="text-sm font-heading font-semibold flex items-center gap-2">
+            <span className="text-amber-500">⚠</span> Important Notes
+          </p>
+          <ul className="text-xs text-muted-foreground space-y-1.5 list-disc pl-4">
+            <li>Ensure your EcoCash account has a <span className="font-medium text-foreground">minimum balance of USD $25.00</span></li>
+            <li>The phone number must be <span className="font-medium text-foreground">registered with EcoCash</span></li>
+            <li>Do <span className="font-medium text-foreground">not close this page</span> while the payment is being processed</li>
+            <li>If you do not receive a prompt within 30 seconds, try again or contact EcoCash support at <span className="font-medium text-foreground">*151#</span></li>
+            <li>This is a <span className="font-medium text-foreground">non-refundable</span> application processing fee</li>
+            <li>You will receive an <span className="font-medium text-foreground">SMS confirmation</span> from EcoCash once the payment is successful</li>
+          </ul>
         </CardContent>
       </Card>
 
@@ -384,7 +413,7 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
           placeholder="77 123 4567"
           required
         />
-        <p className="text-xs text-muted-foreground">The EcoCash number that will be charged USD $25.00</p>
+        <p className="text-xs text-muted-foreground">The EcoCash number that will be charged USD $25.00. Must be a registered EcoCash number.</p>
       </div>
     </FormWrapper>
   );
