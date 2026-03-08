@@ -26,6 +26,8 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
   const [phoneNumber, setPhoneNumber] = useState(data.phoneNumber || "");
   const [stage, setStage] = useState<PaymentStage>(alreadyPaid ? "success" : "input");
   const [countdown, setCountdown] = useState(0);
+  const [retryOpen, setRetryOpen] = useState(false);
+  const [retryPhone, setRetryPhone] = useState(data.phoneNumber || "");
 
   const txRef = useMemo(() => data.referenceNumber || `EC${Date.now().toString(36).toUpperCase()}`, [data.referenceNumber]);
   const txTime = useMemo(() => data.paymentDate ? new Date(data.paymentDate) : new Date(), [data.paymentDate]);
