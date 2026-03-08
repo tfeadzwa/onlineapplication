@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ApplicationForm from "./pages/ApplicationForm";
 import Profile from "./pages/Profile";
+import AcceptedOffer from "./pages/AcceptedOffer";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/apply/:id" element={<ProtectedRoute><ApplicationForm /></ProtectedRoute>} />
+            <Route path="/accepted/:id" element={<ProtectedRoute><AcceptedOffer /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
