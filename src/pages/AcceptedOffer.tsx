@@ -220,11 +220,6 @@ const AcceptedOffer = () => {
     doc.save(`GZU_Acceptance_Letter_${regNumber.replace(/\//g, "_")}.pdf`);
   };
 
-  // Track which next-step sections have been viewed
-  const [viewedSteps, setViewedSteps] = useState<Set<number>>(new Set());
-  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const bottomRef = useRef<HTMLDivElement>(null);
 
   const allStepsViewed = viewedSteps.size === nextSteps.length;
   const readProgress = Math.round((viewedSteps.size / nextSteps.length) * 100);
