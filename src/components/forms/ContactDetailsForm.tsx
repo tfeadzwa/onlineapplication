@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import SearchableSelect from "@/components/ui/searchable-select";
+import PhoneInput from "@/components/ui/phone-input";
 import { CountrySelect } from "@/components/ui/country-select";
 import { ZW_PROVINCES, ZW_CITIES, RELATIONSHIPS } from "@/lib/form-options";
 import FormWrapper from "./FormWrapper";
@@ -43,11 +44,11 @@ const ContactDetailsForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Phone Number *</Label>
-          <Input value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="e.g. +263 7X XXX XXXX" required />
+          <PhoneInput value={form.phone} onChange={(v) => update("phone", v)} placeholder="7X XXX XXXX" required />
         </div>
         <div className="space-y-2">
           <Label>Alternative Phone</Label>
-          <Input value={form.altPhone} onChange={(e) => update("altPhone", e.target.value)} placeholder="e.g. +263 7X XXX XXXX" />
+          <PhoneInput value={form.altPhone} onChange={(v) => update("altPhone", v)} placeholder="7X XXX XXXX" />
         </div>
         <div className="space-y-2 sm:col-span-2">
           <Label>Email Address *</Label>
@@ -88,7 +89,7 @@ const ContactDetailsForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =>
           </div>
           <div className="space-y-2">
             <Label>Phone *</Label>
-            <Input value={form.nextOfKinPhone} onChange={(e) => update("nextOfKinPhone", e.target.value)} placeholder="e.g. +263 7X XXX XXXX" required />
+            <PhoneInput value={form.nextOfKinPhone} onChange={(v) => update("nextOfKinPhone", v)} placeholder="7X XXX XXXX" required />
           </div>
           <div className="space-y-2">
             <Label>Relationship *</Label>
