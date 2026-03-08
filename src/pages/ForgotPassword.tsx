@@ -11,13 +11,28 @@ import { ArrowLeft, Mail } from "lucide-react";
 const ZW_ID_REGEX = /^\d{2}-\d{6}[A-Za-z]\d{2}$/;
 
 const ForgotPassword = () => {
-  const [step, setStep] = useState<"form" | "sent">("form");
+  const [step, setStep] = useState<"email" | "verify" | "sent">("email");
   const [email, setEmail] = useState("");
   const [country, setCountry] = useState("zimbabwe");
   const [nationalId, setNationalId] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      const users = JSON.parse(localStorage.getItem("gz_users") || "[]");
+      const found = users.find((u: any) => u.email === email);
+      if (found) {
+        setStep("verify");
+      } else {
+        toast.error("No account found with this email address.");
+      }
+      setLoading(false);
+    }, 600);
+  };
+
+  const handleVerifySubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (country === "zimbabwe" && !ZW_ID_REGEX.test(nationalId)) {
@@ -26,8 +41,6 @@ const ForgotPassword = () => {
     }
 
     setLoading(true);
-
-    // Simulate verification against stored users
     setTimeout(() => {
       const users = JSON.parse(localStorage.getItem("gz_users") || "[]");
       const found = users.find(
@@ -35,7 +48,6 @@ const ForgotPassword = () => {
       );
 
       if (found) {
-        // Store reset token
         const token = crypto.randomUUID();
         localStorage.setItem(
           "gz_reset_token",
@@ -43,7 +55,7 @@ const ForgotPassword = () => {
         );
         setStep("sent");
       } else {
-        toast.error("No account found with these details. Please check your email and national ID.");
+        toast.error("National ID does not match our records for this email.");
       }
       setLoading(false);
     }, 800);
@@ -51,7 +63,7 @@ const ForgotPassword = () => {
 
   if (step === "sent") {
     return (
-      <AuthLayout title="Check your details" subtitle="Password reset is ready">
+      <AuthLayout title="Identity verified" subtitle="You can now reset your password">
         <div className="text-center space-y-6">
           <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
             <Mail className="w-8 h-8 text-primary" />
@@ -81,9 +93,56 @@ const ForgotPassword = () => {
     );
   }
 
+  if (step === "verify") {
+    return (
+      <AuthLayout title="Verify your identity" subtitle={`Confirm your identity for ${email}`}>
+        <form onSubmit={handleVerifySubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="country">Country</Label>
+            <CountrySelect
+              value={country}
+              onValueChange={(v) => {
+                setCountry(v);
+                setNationalId("");
+              }}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="nationalId">National ID Number</Label>
+            <Input
+              id="nationalId"
+              placeholder={country === "zimbabwe" ? "e.g. 45-202231J45" : "Enter your national ID number"}
+              value={nationalId}
+              onChange={(e) => setNationalId(e.target.value)}
+              required
+            />
+            {country === "zimbabwe" && (
+              <p className="text-xs text-muted-foreground">
+                Format: XX-XXXXXXAXX (e.g. 45-202231J45)
+              </p>
+            )}
+          </div>
+          <Button type="submit" className="w-full" size="lg" disabled={loading}>
+            {loading ? "Verifying..." : "Verify Identity"}
+          </Button>
+          <p className="text-center">
+            <button
+              type="button"
+              onClick={() => setStep("email")}
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Use a different email
+            </button>
+          </p>
+        </form>
+      </AuthLayout>
+    );
+  }
+
   return (
-    <AuthLayout title="Forgot password?" subtitle="Verify your identity to reset your password">
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <AuthLayout title="Forgot password?" subtitle="Enter your email to get started">
+      <form onSubmit={handleEmailSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email Address</Label>
           <Input
@@ -95,33 +154,8 @@ const ForgotPassword = () => {
             required
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="country">Country</Label>
-          <CountrySelect
-            value={country}
-            onValueChange={(v) => {
-              setCountry(v);
-              setNationalId("");
-            }}
-          />
-        </div>
-        <div className="space-y-1">
-          <Label htmlFor="nationalId">National ID Number</Label>
-          <Input
-            id="nationalId"
-            placeholder={country === "zimbabwe" ? "e.g. 45-202231J45" : "Enter your national ID number"}
-            value={nationalId}
-            onChange={(e) => setNationalId(e.target.value)}
-            required
-          />
-          {country === "zimbabwe" && (
-            <p className="text-xs text-muted-foreground">
-              Format: XX-XXXXXXAXX (e.g. 45-202231J45)
-            </p>
-          )}
-        </div>
         <Button type="submit" className="w-full" size="lg" disabled={loading}>
-          {loading ? "Verifying..." : "Verify Identity"}
+          {loading ? "Checking..." : "Continue"}
         </Button>
         <p className="text-center">
           <Link
