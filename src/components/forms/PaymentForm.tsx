@@ -55,8 +55,8 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
     onNext({
       phoneNumber,
       paymentMethod: "ecocash",
-      referenceNumber: `EC${Date.now().toString(36).toUpperCase()}`,
-      paymentDate: new Date().toISOString().split("T")[0],
+      referenceNumber: txRef,
+      paymentDate: txTime.toISOString().split("T")[0],
     });
   };
 
