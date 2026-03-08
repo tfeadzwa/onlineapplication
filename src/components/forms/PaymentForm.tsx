@@ -458,9 +458,9 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
 
       {/* EcoCash badge */}
       <div className="flex items-center gap-4 p-4 rounded-lg border-2 border-primary bg-primary/5 shadow-sm">
-        <Smartphone className="w-5 h-5 text-primary" />
+        <img src={ecocashLogo} alt="EcoCash" className="h-6 w-auto" />
         <div className="flex-1">
-          <p className="font-medium text-sm">EcoCash Mobile Money</p>
+          <p className="font-medium text-sm">Mobile Money</p>
           <p className="text-xs text-muted-foreground">A payment prompt will be sent to your phone</p>
         </div>
         <CheckCircle2 className="w-5 h-5 text-primary" />
