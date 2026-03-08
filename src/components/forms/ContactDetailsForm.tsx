@@ -48,7 +48,7 @@ const ContactDetailsForm = ({ data, onNext, onBack, isFirst, isLast }: Props) =>
         </div>
         <div className="space-y-2">
           <Label>Alternative Phone</Label>
-          <Input value={form.altPhone} onChange={(e) => update("altPhone", e.target.value)} placeholder="e.g. +263 7X XXX XXXX" />
+          <PhoneInput value={form.altPhone} onChange={(v) => update("altPhone", v)} placeholder="7X XXX XXXX" />
         </div>
         <div className="space-y-2 sm:col-span-2">
           <Label>Email Address *</Label>
