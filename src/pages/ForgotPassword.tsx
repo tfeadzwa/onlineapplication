@@ -139,7 +139,6 @@ const ForgotPassword = () => {
               value={nationalId}
               onChange={(e) => { setNationalId(e.target.value); setError(""); }}
             />
-            />
             {country === "zimbabwe" && (
               <p className="text-xs text-muted-foreground">
                 Format: XX-XXXXXXAXX (e.g. 45-202231J45)
