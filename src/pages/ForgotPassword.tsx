@@ -20,6 +20,16 @@ const ForgotPassword = () => {
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!email.trim()) {
+      setError("Please enter your email address.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
     setTimeout(() => {
       const users = JSON.parse(localStorage.getItem("gz_users") || "[]");
