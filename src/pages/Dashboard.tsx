@@ -29,12 +29,17 @@ const statusConfig = {
 };
 
 const Dashboard = () => {
-  const { user, applications, createApplication, logout, deleteApplication, cancelApplication, reopenApplication } = useAuth();
+  const { user, applications, createApplication, logout, deleteApplication, cancelApplication, reopenApplication, createTestAcceptedApplication } = useAuth();
   const navigate = useNavigate();
 
   const handleNewApplication = () => {
     const app = createApplication();
     navigate(`/apply/${app.id}`);
+  };
+
+  const handleTestAccepted = () => {
+    const app = createTestAcceptedApplication();
+    toast.success("Test accepted application created!");
   };
 
   const handleLogout = () => {
