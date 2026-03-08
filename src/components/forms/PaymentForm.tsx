@@ -400,10 +400,10 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
       </Card>
 
       {/* Important notes */}
-      <Card className="bg-muted/50 border-amber-500/20">
+      <Card className="bg-muted/50 border-destructive/20">
         <CardContent className="p-4 space-y-2">
           <p className="text-sm font-heading font-semibold flex items-center gap-2">
-            <span className="text-amber-500">⚠</span> Important Notes
+            <span className="text-destructive">⚠</span> Important Notes
           </p>
           <ul className="text-xs text-muted-foreground space-y-1.5 list-disc pl-4">
             <li>Ensure your EcoCash account has a <span className="font-medium text-foreground">minimum balance of USD $25.00</span></li>
