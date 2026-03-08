@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Label } from "@/components/ui/label";
 import PhoneInput from "@/components/ui/phone-input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Smartphone, CheckCircle2, ArrowLeft, ArrowRight, Loader2, Phone } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Smartphone, CheckCircle2, ArrowLeft, ArrowRight, Loader2, Phone, Receipt, Calendar, Hash, User, CreditCard, Clock } from "lucide-react";
 import FormWrapper from "./FormWrapper";
 
 interface Props {
