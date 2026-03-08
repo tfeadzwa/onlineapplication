@@ -36,6 +36,7 @@ interface AuthContextType {
   deleteApplication: (id: string) => void;
   cancelApplication: (id: string) => void;
   reopenApplication: (id: string) => void;
+  createTestAcceptedApplication: () => Application;
 }
 
 export interface RegisterData {
