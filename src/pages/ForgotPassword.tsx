@@ -180,7 +180,6 @@ const ForgotPassword = () => {
             placeholder="you@example.com"
             value={email}
             onChange={(e) => { setEmail(e.target.value); setError(""); }}
-            required
           />
         </div>
         <Button type="submit" className="w-full" size="lg" disabled={loading}>
