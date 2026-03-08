@@ -90,15 +90,47 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return false;
   };
 
-  const register = (fullName: string, email: string, nationalId: string, password: string) => {
+  const register = (data: RegisterData) => {
     const users = JSON.parse(localStorage.getItem("gz_users") || "[]");
-    if (users.find((u: any) => u.email === email)) return false;
-    const newUser = { id: crypto.randomUUID(), fullName, email, nationalId, password };
+    if (users.find((u: any) => u.email === data.email)) return false;
+    const newUser = {
+      id: crypto.randomUUID(),
+      fullName: data.fullName,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      middleName: data.middleName,
+      email: data.email,
+      nationalId: data.nationalId,
+      country: data.country,
+      password: data.password,
+    };
     users.push(newUser);
     localStorage.setItem("gz_users", JSON.stringify(users));
     const { password: _, ...userData } = newUser;
-    setUser(userData);
+    setUser(userData as User);
     setApplications([]);
+    return true;
+  };
+
+  const updateProfile = (data: Partial<User>) => {
+    if (!user) return;
+    const updated = { ...user, ...data };
+    setUser(updated);
+    const users = JSON.parse(localStorage.getItem("gz_users") || "[]");
+    const idx = users.findIndex((u: any) => u.id === user.id);
+    if (idx !== -1) {
+      users[idx] = { ...users[idx], ...data };
+      localStorage.setItem("gz_users", JSON.stringify(users));
+    }
+  };
+
+  const changePassword = (currentPassword: string, newPassword: string) => {
+    if (!user) return false;
+    const users = JSON.parse(localStorage.getItem("gz_users") || "[]");
+    const found = users.find((u: any) => u.id === user.id && u.password === currentPassword);
+    if (!found) return false;
+    found.password = newPassword;
+    localStorage.setItem("gz_users", JSON.stringify(users));
     return true;
   };
 
