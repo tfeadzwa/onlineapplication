@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Smartphone, CheckCircle2, ArrowLeft, ArrowRight, Loader2, Phone, Receipt, Calendar, Hash, User, CreditCard, Clock } from "lucide-react";
+import { Smartphone, CheckCircle2, ArrowLeft, ArrowRight, Loader2, Phone, Receipt, Calendar, Hash, User, CreditCard, Clock, Download } from "lucide-react";
 import FormWrapper from "./FormWrapper";
 
 interface Props {
@@ -21,12 +21,13 @@ const APPLICATION_FEE = 25;
 type PaymentStage = "input" | "waiting" | "success";
 
 const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
+  const alreadyPaid = !!(data.referenceNumber && data.paymentDate);
   const [phoneNumber, setPhoneNumber] = useState(data.phoneNumber || "");
-  const [stage, setStage] = useState<PaymentStage>("input");
+  const [stage, setStage] = useState<PaymentStage>(alreadyPaid ? "success" : "input");
   const [countdown, setCountdown] = useState(0);
 
-  const txRef = useMemo(() => `EC${Date.now().toString(36).toUpperCase()}`, []);
-  const txTime = useMemo(() => new Date(), []);
+  const txRef = useMemo(() => data.referenceNumber || `EC${Date.now().toString(36).toUpperCase()}`, [data.referenceNumber]);
+  const txTime = useMemo(() => data.paymentDate ? new Date(data.paymentDate) : new Date(), [data.paymentDate]);
 
   const handleInitiatePayment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +59,38 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
       referenceNumber: txRef,
       paymentDate: txTime.toISOString().split("T")[0],
     });
+  };
+
+  const handleDownloadReceipt = () => {
+    const formattedDate = txTime.toLocaleDateString("en-ZW", { year: "numeric", month: "long", day: "numeric" });
+    const formattedTime = txTime.toLocaleTimeString("en-ZW", { hour: "2-digit", minute: "2-digit" });
+    const receipt = [
+      "═══════════════════════════════════════",
+      "         PAYMENT RECEIPT",
+      "    Great Zimbabwe University",
+      "═══════════════════════════════════════",
+      "",
+      `  Transaction Ref:  ${txRef}`,
+      `  Amount:           USD $25.00`,
+      `  Payment Method:   EcoCash Mobile Money`,
+      `  Phone Number:     ${phoneNumber}`,
+      `  Date:             ${formattedDate}`,
+      `  Time:             ${formattedTime}`,
+      `  Description:      Application Processing Fee`,
+      `  Status:           PAID ✓`,
+      "",
+      "═══════════════════════════════════════",
+      "  Keep this receipt for your records.",
+      "═══════════════════════════════════════",
+    ].join("\n");
+
+    const blob = new Blob([receipt], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `receipt-${txRef}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   // ── Waiting for phone confirmation ──
@@ -223,7 +256,10 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
           </div>
         </Card>
 
-        <div className="flex items-center gap-3 mt-8">
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
+          <Button variant="outline" onClick={handleDownloadReceipt}>
+            <Download className="w-4 h-4 mr-2" /> Download Receipt
+          </Button>
           <Button variant="outline" onClick={onBack}>
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
           </Button>
