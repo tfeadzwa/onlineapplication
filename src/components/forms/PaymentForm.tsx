@@ -262,9 +262,21 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
                 </div>
 
                 {/* How it works - compact */}
-                <div className="text-xs text-muted-foreground bg-muted/50 rounded-lg p-3 space-y-0.5">
-                  <p>1. Enter your EcoCash number → 2. Click Pay → 3. Confirm PIN on phone</p>
+                <div className="text-xs text-muted-foreground bg-muted/50 rounded-lg p-3 space-y-1.5">
+                  <div className="flex items-start gap-1.5">
+                    <span className="font-bold text-primary">1.</span>
+                    <span>Enter your <span className="font-medium text-foreground">EcoCash registered number</span> below</span>
+                  </div>
+                  <div className="flex items-start gap-1.5">
+                    <span className="font-bold text-primary">2.</span>
+                    <span>Click <span className="font-medium text-foreground">"Pay via EcoCash"</span></span>
+                  </div>
+                  <div className="flex items-start gap-1.5">
+                    <span className="font-bold text-primary">3.</span>
+                    <span>Authorize the payment by entering your <span className="font-medium text-foreground">EcoCash PIN</span> on the USSD prompt</span>
+                  </div>
                 </div>
+                <p className="text-xs text-muted-foreground">⚠ Ensure your account has at least <span className="font-medium text-foreground">USD $25.00</span> balance. Do not close this page during processing.</p>
 
                 {/* Phone input */}
                 <div className="space-y-2">
