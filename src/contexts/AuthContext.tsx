@@ -26,8 +26,10 @@ interface AuthContextType {
   user: User | null;
   applications: Application[];
   login: (email: string, password: string) => boolean;
-  register: (fullName: string, email: string, nationalId: string, password: string) => boolean;
+  register: (data: RegisterData) => boolean;
   logout: () => void;
+  updateProfile: (data: Partial<User>) => void;
+  changePassword: (currentPassword: string, newPassword: string) => boolean;
   createApplication: () => Application;
   updateApplication: (id: string, step: number, data: Record<string, any>) => void;
   submitApplication: (id: string) => void;
