@@ -29,12 +29,17 @@ const statusConfig = {
 };
 
 const Dashboard = () => {
-  const { user, applications, createApplication, logout, deleteApplication, cancelApplication, reopenApplication } = useAuth();
+  const { user, applications, createApplication, logout, deleteApplication, cancelApplication, reopenApplication, createTestAcceptedApplication } = useAuth();
   const navigate = useNavigate();
 
   const handleNewApplication = () => {
     const app = createApplication();
     navigate(`/apply/${app.id}`);
+  };
+
+  const handleTestAccepted = () => {
+    const app = createTestAcceptedApplication();
+    toast.success("Test accepted application created!");
   };
 
   const handleLogout = () => {
@@ -107,10 +112,16 @@ const Dashboard = () => {
               <h1 className="text-3xl font-heading font-bold tracking-tight">{firstName} 👋</h1>
               <p className="text-muted-foreground mt-1">Here's an overview of your applications.</p>
             </div>
-            <Button onClick={handleNewApplication} size="lg" className="shadow-md hover:shadow-lg transition-shadow">
-              <Plus className="w-4 h-4 mr-2" />
-              New Application
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleTestAccepted} className="text-xs">
+                <CheckCircle className="w-3 h-3 mr-1" />
+                Test Accepted
+              </Button>
+              <Button onClick={handleNewApplication} size="lg" className="shadow-md hover:shadow-lg transition-shadow">
+                <Plus className="w-4 h-4 mr-2" />
+                New Application
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -159,12 +170,13 @@ const Dashboard = () => {
               const StatusIcon = config.icon;
               const isDraft = app.status === "draft";
               const isSubmitted = app.status === "submitted";
+              const isAccepted = app.status === "accepted";
 
               return (
                 <Card
                   key={app.id}
                   className="animate-fade-in group hover:shadow-md hover:border-primary/20 transition-all duration-200 cursor-pointer"
-                  onClick={() => navigate(`/apply/${app.id}`)}
+                  onClick={() => isAccepted ? navigate(`/accepted/${app.id}`) : navigate(`/apply/${app.id}`)}
                 >
                   <CardContent className="p-0">
                     <div className="flex items-center gap-4 p-4 sm:p-5">
@@ -290,7 +302,15 @@ const Dashboard = () => {
                           </DropdownMenu>
                         )}
 
-                        <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                        {isAccepted && (
+                          <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] shrink-0">
+                            View Offer →
+                          </Badge>
+                        )}
+
+                        {!isAccepted && (
+                          <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                        )}
                       </div>
                     </div>
 

@@ -36,6 +36,7 @@ interface AuthContextType {
   deleteApplication: (id: string) => void;
   cancelApplication: (id: string) => void;
   reopenApplication: (id: string) => void;
+  createTestAcceptedApplication: () => Application;
 }
 
 export interface RegisterData {
@@ -212,8 +213,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("gz_all_applications", JSON.stringify(allUpdated));
   };
 
+  const createTestAcceptedApplication = () => {
+    const app: Application = {
+      id: crypto.randomUUID(),
+      userId: user!.id,
+      status: "accepted",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      currentStep: 10,
+      data: {
+        faculty1: "Faculty of Natural Sciences",
+        programme1: "BSc Computer Science",
+        faculty2: "Faculty of Commerce",
+        programme2: "B.Com Finance",
+        faculty3: "Faculty of Social Sciences",
+        programme3: "BSc Economics",
+        intakeYear: new Date().getFullYear().toString(),
+      },
+    };
+    const updated = [...applications, app];
+    setApplications(updated);
+    const allApps = JSON.parse(localStorage.getItem("gz_all_applications") || "[]");
+    allApps.push(app);
+    localStorage.setItem("gz_all_applications", JSON.stringify(allApps));
+    return app;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, applications, login, register, logout, updateProfile, changePassword, createApplication, updateApplication, submitApplication, deleteApplication, cancelApplication, reopenApplication }}>
+    <AuthContext.Provider value={{ user, applications, login, register, logout, updateProfile, changePassword, createApplication, updateApplication, submitApplication, deleteApplication, cancelApplication, reopenApplication, createTestAcceptedApplication }}>
       {children}
     </AuthContext.Provider>
   );
