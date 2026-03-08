@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Smartphone, CheckCircle2, ArrowLeft, ArrowRight, Loader2, Phone, Receipt, Calendar, Hash, User, CreditCard, Clock, Download } from "lucide-react";
+import { Smartphone, CheckCircle2, ArrowLeft, ArrowRight, Loader2, Phone, Receipt, Calendar, Hash, User, CreditCard, Clock, Download, RefreshCw } from "lucide-react";
 import FormWrapper from "./FormWrapper";
 
 interface Props {
@@ -318,7 +318,30 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
           </div>
         </Card>
 
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
+        {/* Retry payment notice */}
+        <Card className="w-full max-w-md border border-dashed border-muted-foreground/30 bg-muted/30">
+          <CardContent className="p-4 flex items-start gap-3">
+            <RefreshCw className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground mb-1">Payment didn't reach GZU?</p>
+              <p className="text-xs text-muted-foreground mb-3">
+                If your EcoCash was debited but the payment wasn't received by the university, you can retry with a new transaction.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setStage("input");
+                }}
+              >
+                <RefreshCw className="w-3.5 h-3.5 mr-2" />
+                Pay Again
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
           <Button variant="outline" onClick={handleDownloadReceipt}>
             <Download className="w-4 h-4 mr-2" /> Download Receipt
           </Button>
