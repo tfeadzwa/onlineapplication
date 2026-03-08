@@ -278,8 +278,8 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
               <div className="px-4 pb-4 space-y-4 border-t border-border/50 pt-4 animate-fade-in">
                 <div className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-primary/20">
                   <div className="flex items-center gap-2">
-                    <Smartphone className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium">EcoCash Mobile Money</span>
+                    <img src={ecocashLogo} alt="EcoCash" className="h-5 w-auto" />
+                    <span className="text-sm font-medium">Mobile Money</span>
                   </div>
                   <span className="text-sm font-heading font-bold text-primary">USD $25.00</span>
                 </div>
