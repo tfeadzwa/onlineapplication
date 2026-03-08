@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Label } from "@/components/ui/label";
 import PhoneInput from "@/components/ui/phone-input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Smartphone, CheckCircle2, ArrowLeft, ArrowRight, Loader2, Phone } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Smartphone, CheckCircle2, ArrowLeft, ArrowRight, Loader2, Phone, Receipt, Calendar, Hash, User, CreditCard, Clock } from "lucide-react";
 import FormWrapper from "./FormWrapper";
 
 interface Props {
@@ -23,6 +24,9 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
   const [phoneNumber, setPhoneNumber] = useState(data.phoneNumber || "");
   const [stage, setStage] = useState<PaymentStage>("input");
   const [countdown, setCountdown] = useState(0);
+
+  const txRef = useMemo(() => `EC${Date.now().toString(36).toUpperCase()}`, []);
+  const txTime = useMemo(() => new Date(), []);
 
   const handleInitiatePayment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,8 +55,8 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
     onNext({
       phoneNumber,
       paymentMethod: "ecocash",
-      referenceNumber: `EC${Date.now().toString(36).toUpperCase()}`,
-      paymentDate: new Date().toISOString().split("T")[0],
+      referenceNumber: txRef,
+      paymentDate: txTime.toISOString().split("T")[0],
     });
   };
 
@@ -105,33 +109,121 @@ const PaymentForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
 
   // ── Payment successful ──
   if (stage === "success") {
+    const formattedDate = txTime.toLocaleDateString("en-ZW", {
+      year: "numeric", month: "long", day: "numeric",
+    });
+    const formattedTime = txTime.toLocaleTimeString("en-ZW", {
+      hour: "2-digit", minute: "2-digit",
+    });
+
     return (
-      <div className="flex flex-col items-center justify-center py-16 animate-fade-in">
-        <div className="relative mb-8">
-          <div className="w-28 h-28 rounded-full bg-success/10 flex items-center justify-center animate-[scale-in_0.5s_ease-out]">
-            <div className="w-20 h-20 rounded-full bg-success/20 flex items-center justify-center">
-              <div className="w-14 h-14 rounded-full bg-success flex items-center justify-center shadow-lg shadow-success/30">
-                <CheckCircle2 className="w-8 h-8 text-success-foreground animate-[scale-in_0.3s_ease-out_0.3s_both]" />
-              </div>
+      <div className="flex flex-col items-center py-10 animate-fade-in">
+        {/* Success icon */}
+        <div className="relative mb-6">
+          <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center animate-[scale-in_0.5s_ease-out]">
+            <div className="w-14 h-14 rounded-full bg-success flex items-center justify-center shadow-lg shadow-success/30">
+              <CheckCircle2 className="w-7 h-7 text-success-foreground animate-[scale-in_0.3s_ease-out_0.3s_both]" />
             </div>
           </div>
-          <div className="absolute inset-0 w-28 h-28 rounded-full border-2 border-success/30 animate-ping" />
         </div>
 
-        <h2 className="text-2xl font-heading font-bold text-foreground mb-2">Payment Successful!</h2>
-        <p className="text-muted-foreground text-center max-w-sm mb-2">
-          Your EcoCash payment of <span className="font-semibold text-foreground">USD $25.00</span> has been confirmed.
-        </p>
-        <p className="text-sm text-muted-foreground mb-8">
-          Phone: <span className="font-semibold text-foreground">{phoneNumber}</span>
-        </p>
+        <h2 className="text-2xl font-heading font-bold text-foreground mb-1">Payment Successful!</h2>
+        <p className="text-sm text-muted-foreground mb-6">Your application fee has been received</p>
 
-        <Badge className="bg-success/10 text-success border-success/20 mb-8 px-4 py-2 text-sm">
-          <CheckCircle2 className="w-4 h-4 mr-2" />
-          Payment Verified
-        </Badge>
+        {/* Receipt Card */}
+        <Card className="w-full max-w-md border-2 border-success/20 shadow-lg shadow-success/5 overflow-hidden">
+          {/* Receipt header */}
+          <div className="bg-success/5 px-6 py-4 flex items-center justify-between border-b border-success/10">
+            <div className="flex items-center gap-2">
+              <Receipt className="w-5 h-5 text-success" />
+              <span className="font-heading font-semibold text-sm">Payment Receipt</span>
+            </div>
+            <Badge className="bg-success/10 text-success border-success/20 text-xs">
+              <CheckCircle2 className="w-3 h-3 mr-1" />
+              Paid
+            </Badge>
+          </div>
 
-        <div className="flex items-center gap-3">
+          <CardContent className="p-6 space-y-4">
+            {/* Amount */}
+            <div className="text-center py-3 rounded-lg bg-muted/50">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Amount Paid</p>
+              <p className="text-3xl font-heading font-bold text-foreground">USD $25.00</p>
+            </div>
+
+            <Separator />
+
+            {/* Details grid */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Hash className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground">Transaction Reference</p>
+                  <p className="text-sm font-mono font-semibold text-foreground truncate">{txRef}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Phone className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground">EcoCash Number</p>
+                  <p className="text-sm font-semibold text-foreground">{phoneNumber}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <CreditCard className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground">Payment Method</p>
+                  <p className="text-sm font-semibold text-foreground">EcoCash Mobile Money</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Calendar className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground">Date</p>
+                  <p className="text-sm font-semibold text-foreground">{formattedDate}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Clock className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground">Time</p>
+                  <p className="text-sm font-semibold text-foreground">{formattedTime}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <User className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground">Description</p>
+                  <p className="text-sm font-semibold text-foreground">Application Processing Fee</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+
+          {/* Receipt footer */}
+          <div className="bg-muted/30 px-6 py-3 border-t text-center">
+            <p className="text-xs text-muted-foreground">Keep this receipt for your records</p>
+          </div>
+        </Card>
+
+        <div className="flex items-center gap-3 mt-8">
           <Button variant="outline" onClick={onBack}>
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
           </Button>
