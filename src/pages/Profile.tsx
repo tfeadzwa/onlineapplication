@@ -84,7 +84,7 @@ const Profile = () => {
         </div>
       </header>
 
-      <main className="container px-4 sm:px-6 py-8 max-w-3xl">
+      <main className="container px-4 sm:px-6 py-8 max-w-6xl">
         {/* Profile Header */}
         <div className="flex items-center gap-5 mb-8 animate-fade-in">
           <div className="w-20 h-20 rounded-2xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center shrink-0">
@@ -99,7 +99,7 @@ const Profile = () => {
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
           {/* Personal Information */}
           <Card className="animate-fade-in">
             <CardHeader className="pb-4">
