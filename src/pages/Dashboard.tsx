@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   GraduationCap, Plus, LogOut, FileText, Clock, CheckCircle, XCircle, Eye,
   Trash2, Edit, RotateCcw, TrendingUp, Send, Layers, CalendarDays, ArrowRight,
-  Sparkles, MoreHorizontal,
+  Sparkles, MoreHorizontal, UserCircle,
 } from "lucide-react";
 import { format } from "date-fns";
 import {
@@ -85,10 +85,16 @@ const Dashboard = () => {
             </div>
             <span className="font-heading font-bold text-sm">GZU Admissions</span>
           </div>
-          <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground hover:text-foreground">
-            <LogOut className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Sign Out</span>
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/profile")} className="text-muted-foreground hover:text-foreground">
+              <UserCircle className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Profile</span>
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground hover:text-foreground">
+              <LogOut className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </Button>
+          </div>
         </div>
       </header>
 
