@@ -152,6 +152,12 @@ const ForgotPassword = () => {
   return (
     <AuthLayout title="Forgot password?" subtitle="Enter your email to get started">
       <form onSubmit={handleEmailSubmit} className="space-y-4">
+        {error && (
+          <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive animate-fade-in">
+            <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
         <div className="space-y-2">
           <Label htmlFor="email">Email Address</Label>
           <Input
@@ -159,7 +165,7 @@ const ForgotPassword = () => {
             type="email"
             placeholder="you@example.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { setEmail(e.target.value); setError(""); }}
             required
           />
         </div>
