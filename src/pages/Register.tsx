@@ -106,6 +106,33 @@ const Register = () => {
             <Input id="confirmPassword" type="password" placeholder="Re-enter password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
           </div>
         </div>
+        {/* Password Requirements */}
+        {password.length > 0 && (
+          <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-1.5">
+            <p className="text-xs font-medium text-muted-foreground mb-1">Password requirements</p>
+            {[
+              { label: "At least 6 characters", met: password.length >= 6 },
+              { label: "Contains a number", met: /\d/.test(password) },
+              { label: "Contains an uppercase letter", met: /[A-Z]/.test(password) },
+              { label: "Contains a lowercase letter", met: /[a-z]/.test(password) },
+            ].map((req) => (
+              <div key={req.label} className="flex items-center gap-2">
+                <div className={`flex items-center justify-center w-4 h-4 rounded-full transition-colors ${req.met ? "bg-emerald-500/15 text-emerald-600" : "bg-destructive/10 text-destructive"}`}>
+                  {req.met ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                </div>
+                <span className={`text-xs transition-colors ${req.met ? "text-emerald-600" : "text-muted-foreground"}`}>{req.label}</span>
+              </div>
+            ))}
+            {confirmPassword.length > 0 && (
+              <div className="flex items-center gap-2 pt-1 border-t border-border/50 mt-1.5">
+                <div className={`flex items-center justify-center w-4 h-4 rounded-full transition-colors ${password === confirmPassword ? "bg-emerald-500/15 text-emerald-600" : "bg-destructive/10 text-destructive"}`}>
+                  {password === confirmPassword ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                </div>
+                <span className={`text-xs transition-colors ${password === confirmPassword ? "text-emerald-600" : "text-muted-foreground"}`}>Passwords match</span>
+              </div>
+            )}
+          </div>
+        )}
         <Button type="submit" className="w-full" size="lg" disabled={loading}>
           {loading ? "Creating account..." : "Create Account"}
         </Button>
