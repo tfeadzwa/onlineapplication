@@ -43,7 +43,7 @@ const Register = () => {
     const fullName = [firstName, hasMiddleName ? middleName : "", lastName].filter(Boolean).join(" ");
     setLoading(true);
     setTimeout(() => {
-      if (register(fullName, email, nationalId, password)) {
+      if (register({ fullName, firstName, lastName, middleName: hasMiddleName ? middleName : undefined, email, nationalId, country, password })) {
         toast.success("Account created successfully!");
         navigate("/dashboard");
       } else {
