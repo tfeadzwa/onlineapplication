@@ -29,14 +29,13 @@ const Profile = () => {
   const [showNewPw, setShowNewPw] = useState(false);
   const [changingPw, setChangingPw] = useState(false);
 
-  const handleSaveProfile = () => {
+  const handleSaveProfile = async () => {
     setSaving(true);
     const fullName = [firstName, middleName, lastName].filter(Boolean).join(" ");
-    setTimeout(() => {
-      updateProfile({ firstName, lastName, middleName, phone, fullName });
-      toast.success("Profile updated successfully");
-      setSaving(false);
-    }, 400);
+    const res = await updateProfile({ firstName, lastName, middleName, phone, fullName });
+    setSaving(false);
+    if (res.ok) toast.success("Profile updated successfully");
+    else toast.error(res.error);
   };
 
   const passwordRequirements = [
@@ -47,21 +46,20 @@ const Profile = () => {
   ];
   const allMet = passwordRequirements.every((r) => r.met);
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     if (!allMet) { toast.error("Password doesn't meet all requirements"); return; }
     if (newPassword !== confirmPassword) { toast.error("Passwords do not match"); return; }
     setChangingPw(true);
-    setTimeout(() => {
-      if (changePassword(currentPassword, newPassword)) {
-        toast.success("Password changed successfully");
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-      } else {
-        toast.error("Current password is incorrect");
-      }
-      setChangingPw(false);
-    }, 400);
+    const res = await changePassword(currentPassword, newPassword);
+    setChangingPw(false);
+    if (res.ok) {
+      toast.success("Password changed successfully");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } else {
+      toast.error(res.error);
+    }
   };
 
   const initials = `${(user?.firstName || "U")[0]}${(user?.lastName || "")[0] || ""}`.toUpperCase();
