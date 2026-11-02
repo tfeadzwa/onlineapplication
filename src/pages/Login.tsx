@@ -15,18 +15,17 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      if (login(email, password)) {
-        toast.success("Welcome back!");
-        navigate("/dashboard");
-      } else {
-        toast.error("Invalid email or password");
-      }
-      setLoading(false);
-    }, 500);
+    const res = await login(email, password);
+    setLoading(false);
+    if (res.ok) {
+      toast.success("Welcome back!");
+      navigate("/dashboard");
+    } else {
+      toast.error(res.error);
+    }
   };
 
   return (

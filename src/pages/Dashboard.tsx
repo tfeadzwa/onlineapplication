@@ -29,21 +29,17 @@ const statusConfig = {
 };
 
 const Dashboard = () => {
-  const { user, applications, createApplication, logout, deleteApplication, cancelApplication, reopenApplication, createTestAcceptedApplication } = useAuth();
+  const { user, applications, createApplication, logout, deleteApplication, cancelApplication, reopenApplication } = useAuth();
   const navigate = useNavigate();
 
-  const handleNewApplication = () => {
-    const app = createApplication();
+  const handleNewApplication = async () => {
+    const app = await createApplication();
+    if (!app) { toast.error("Could not start a new application. Please try again."); return; }
     navigate(`/apply/${app.id}`);
   };
 
-  const handleTestAccepted = () => {
-    const app = createTestAcceptedApplication();
-    toast.success("Test accepted application created!");
-  };
-
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate("/login");
   };
 
@@ -113,10 +109,6 @@ const Dashboard = () => {
               <p className="text-muted-foreground mt-1">Here's an overview of your applications.</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleTestAccepted} className="text-xs">
-                <CheckCircle className="w-3 h-3 mr-1" />
-                Test Accepted
-              </Button>
               <Button onClick={handleNewApplication} size="lg" className="shadow-md hover:shadow-lg transition-shadow">
                 <Plus className="w-4 h-4 mr-2" />
                 New Application

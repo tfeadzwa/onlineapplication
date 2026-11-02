@@ -23,10 +23,11 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sentTo, setSentTo] = useState("");
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
@@ -42,16 +43,29 @@ const Register = () => {
     }
     const fullName = [firstName, hasMiddleName ? middleName : "", lastName].filter(Boolean).join(" ");
     setLoading(true);
-    setTimeout(() => {
-      if (register({ fullName, firstName, lastName, middleName: hasMiddleName ? middleName : undefined, email, nationalId, country, password })) {
-        toast.success("Account created successfully!");
-        navigate("/dashboard");
-      } else {
-        toast.error("An account with this email already exists");
-      }
-      setLoading(false);
-    }, 500);
+    const res = await register({ fullName, firstName, lastName, middleName: hasMiddleName ? middleName : undefined, email, nationalId, country, password });
+    setLoading(false);
+    if (!res.ok) { toast.error(res.error); return; }
+    if (res.needsConfirmation) { setSentTo(email); return; }
+    toast.success("Account created successfully!");
+    navigate("/dashboard");
   };
+
+  if (sentTo) {
+    return (
+      <AuthLayout title="Check your email" subtitle="One last step to activate your account">
+        <div className="text-center space-y-5">
+          <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+            <Mail className="w-8 h-8 text-primary" />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            We sent a confirmation link to <span className="font-medium text-foreground">{sentTo}</span>. Click it to activate your account, then sign in.
+          </p>
+          <Link to="/login"><Button className="w-full rounded-full" size="lg">Go to Sign In</Button></Link>
+        </div>
+      </AuthLayout>
+    );
+  }
 
   const passwordRequirements = [
     { label: "At least 6 characters", met: password.length >= 6 },
