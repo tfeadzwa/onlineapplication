@@ -29,21 +29,17 @@ const statusConfig = {
 };
 
 const Dashboard = () => {
-  const { user, applications, createApplication, logout, deleteApplication, cancelApplication, reopenApplication, createTestAcceptedApplication } = useAuth();
+  const { user, applications, createApplication, logout, deleteApplication, cancelApplication, reopenApplication } = useAuth();
   const navigate = useNavigate();
 
-  const handleNewApplication = () => {
-    const app = createApplication();
+  const handleNewApplication = async () => {
+    const app = await createApplication();
+    if (!app) { toast.error("Could not start a new application. Please try again."); return; }
     navigate(`/apply/${app.id}`);
   };
 
-  const handleTestAccepted = () => {
-    const app = createTestAcceptedApplication();
-    toast.success("Test accepted application created!");
-  };
-
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate("/login");
   };
 
