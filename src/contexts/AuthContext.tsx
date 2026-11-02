@@ -39,7 +39,7 @@ export interface RegisterData {
   password: string;
 }
 
-type Result = { ok: true } | { ok: false; error: string };
+type Result = { ok: boolean; error?: string };
 
 interface AuthContextType {
   user: User | null;
