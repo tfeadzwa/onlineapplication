@@ -120,7 +120,7 @@ const AdminDashboard = () => {
               {visible.map((r) => {
                 const p = profiles[r.user_id];
                 const name = applicantName(p, r.data);
-                const first = r.data?.programme?.firstChoice || r.data?.programme?.choice1 || r.offered_programme;
+                const first = r.offered_programme || r.data?.programme?.programme1;
                 const docs = collectDocuments(r.data).length;
                 const st = STATUS[r.status] || STATUS.draft;
                 return (
