@@ -7,6 +7,7 @@ import { Plus, Trash2, Upload } from "lucide-react";
 import SearchableSelect from "@/components/ui/searchable-select";
 import { INSTITUTIONS, QUALIFICATIONS } from "@/lib/form-options";
 import FormWrapper from "./FormWrapper";
+import DocumentUpload from "./DocumentUpload";
 
 interface Qualification {
   institution: string;
@@ -14,6 +15,7 @@ interface Qualification {
   fieldOfStudy: string;
   yearCompleted: string;
   certificateFile: string;
+  certificatePath?: string;
 }
 
 interface Props {
@@ -75,11 +77,7 @@ const PostSchoolForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => {
                 <Input value={q.yearCompleted} onChange={(e) => update(i, "yearCompleted", e.target.value)} placeholder="e.g. 2023" />
               </div>
             </div>
-            <label className="flex items-center gap-3 p-3 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary/50 transition-colors">
-              <Upload className="w-4 h-4 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">{q.certificateFile || "Upload certificate"}</span>
-              <input type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => e.target.files?.[0] && update(i, "certificateFile", e.target.files[0].name)} />
-            </label>
+            <DocumentUpload compact label="Upload certificate" fileName={q.certificateFile} filePath={q.certificatePath} onChange={(n, p) => { const u = [...qualifications]; u[i] = { ...u[i], certificateFile: n, certificatePath: p }; setQualifications(u); }} />
           </div>
         ))}
         <Button type="button" variant="outline" onClick={add} className="w-full">

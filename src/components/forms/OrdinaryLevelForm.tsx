@@ -6,6 +6,7 @@ import { Plus, Trash2, Upload } from "lucide-react";
 import SearchableSelect from "@/components/ui/searchable-select";
 import { O_LEVEL_SUBJECTS, GRADES, EXAM_BOARDS } from "@/lib/form-options";
 import FormWrapper from "./FormWrapper";
+import DocumentUpload from "./DocumentUpload";
 
 interface Subject {
   name: string;
@@ -27,6 +28,7 @@ const OrdinaryLevelForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => 
     data.subjects || [{ name: "", grade: "", year: "", board: "zimsec" }]
   );
   const [certificateFile, setCertificateFile] = useState<string>(data.certificateFile || "");
+  const [certificatePath, setCertificatePath] = useState<string>(data.certificatePath || "");
 
   const addSubject = () => setSubjects([...subjects, { name: "", grade: "", year: "", board: "zimsec" }]);
   const removeSubject = (i: number) => setSubjects(subjects.filter((_, idx) => idx !== i));
@@ -45,7 +47,7 @@ const OrdinaryLevelForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => 
     <FormWrapper
       title="Ordinary Level Results"
       description="Enter your O-Level subjects and grades, and upload your certificate."
-      onSubmit={(e) => { e.preventDefault(); onNext({ subjects, certificateFile }); }}
+      onSubmit={(e) => { e.preventDefault(); onNext({ subjects, certificateFile, certificatePath }); }}
       onBack={onBack}
       isFirst={isFirst}
       isLast={isLast}
@@ -88,12 +90,8 @@ const OrdinaryLevelForm = ({ data, onNext, onBack, isFirst, isLast }: Props) => 
 
       <div className="pt-4 border-t mt-4">
         <Label className="font-medium">Upload O-Level Certificate</Label>
-        <p className="text-sm text-muted-foreground mb-3">Upload a scanned copy of your O-Level certificate (PDF, JPG, PNG)</p>
-        <label className="flex items-center gap-3 p-4 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary/50 transition-colors">
-          <Upload className="w-5 h-5 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">{certificateFile || "Click to upload file"}</span>
-          <input type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} />
-        </label>
+        <p className="text-sm text-muted-foreground mb-3">Upload a scanned copy of your O-Level certificate (PDF, Word, JPG, PNG)</p>
+        <DocumentUpload fileName={certificateFile} filePath={certificatePath} onChange={(n, p) => { setCertificateFile(n); setCertificatePath(p); }} />
       </div>
     </FormWrapper>
   );
