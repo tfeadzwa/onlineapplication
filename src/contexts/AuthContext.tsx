@@ -104,6 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null); setIsAdmin(false); setApplications([]); setLoading(false);
       return;
     }
+    setLoading(true);
     const [{ data: profile }, { data: roles }, { data: apps }] = await Promise.all([
       supabase.from("profiles").select("*").eq("id", uid).maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", uid),
