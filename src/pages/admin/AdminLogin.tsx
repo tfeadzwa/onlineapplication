@@ -64,6 +64,9 @@ const AdminLogin = () => {
           <Button type="submit" size="lg" className="w-full rounded-full font-semibold" disabled={loading}>
             {loading ? "Signing in..." : <>Sign In <ArrowRight className="w-4 h-4 ml-1" /></>}
           </Button>
+          <Button type="button" variant="outline" size="lg" className="w-full rounded-full" onClick={() => { setEmail("admissions@gzu.ac.zw"); setPassword("GzuAdmissions#2026"); }}>
+            Use Demo Admin Credentials
+          </Button>
         </form>
         <p className="text-center text-xs text-muted-foreground mt-6">
           Applicant? <Link to="/login" className="text-primary font-semibold hover:underline">Go to student sign in</Link>
