@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ShieldCheck, Mail, Lock, ArrowRight, AlertCircle } from "lucide-react";
+import campusAdmin from "@/assets/campus-graduation.jpg";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -30,10 +31,15 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary relative overflow-hidden flex items-center justify-center p-4">
-      <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-accent/20 blur-3xl" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-primary-foreground/10 blur-3xl" />
-      <div className="relative w-full max-w-md bg-card rounded-3xl shadow-2xl p-8 sm:p-10">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
+      {/* Campus photo backdrop */}
+      <div className="absolute inset-0">
+        <img src={campusAdmin} alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/95 via-primary/85 to-primary/70" />
+        <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-accent/20 blur-3xl" />
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-primary-foreground/10 blur-3xl" />
+      </div>
+      <div className="relative w-full max-w-md bg-card rounded-3xl shadow-2xl p-8 sm:p-10 border border-border/40">
         <div className="flex flex-col items-center text-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4">
             <ShieldCheck className="w-7 h-7" />
